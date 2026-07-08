@@ -1,2 +1,1 @@
-# Resume-Intelligence-AI
-Enterprise AI Resume Intelligence Platform featuring ATS simulation, NLP-based resume analysis, EDA dashboards, Machine Learning, and Generative AI integration for smart recruitment analytics
+Resume Intelligence AI – An enterprise-grade AI-powered ATS and HR Analytics platform featuring Resume Parsing, NLP, EDA, Machine Learning, Deep Learning, LLMs, and Generative AI for intelligent job matching, resume optimization, and career insights.
