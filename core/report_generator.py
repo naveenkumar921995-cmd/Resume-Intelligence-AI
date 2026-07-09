@@ -1,0 +1,310 @@
+"""
+=========================================================
+Resume Intelligence AI
+Professional PDF Report Generator
+Version : 8.0
+Author : Naveen Kumar
+=========================================================
+"""
+
+import os
+from datetime import datetime
+
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle
+)
+
+from reportlab.lib.units import inch
+
+
+class ReportGenerator:
+
+    def __init__(self):
+
+        self.styles = getSampleStyleSheet()
+
+        os.makedirs("reports", exist_ok=True)
+
+    # --------------------------------------------------
+    # Generate PDF Report
+    # --------------------------------------------------
+
+    def generate_report(
+
+        self,
+
+        candidate_name,
+
+        department,
+
+        job_role,
+
+        ats_score,
+
+        matched_skills,
+
+        missing_skills,
+
+        ml_score,
+
+        dl_score,
+
+        recommendation,
+
+        statistics
+
+    ):
+
+        filename = f"reports/{candidate_name.replace(' ','_')}_Report.pdf"
+
+        pdf = SimpleDocTemplate(filename)
+
+        elements = []
+
+        title = Paragraph(
+
+            "<b><font size=20>Resume Intelligence AI</font></b>",
+
+            self.styles["Title"]
+
+        )
+
+        elements.append(title)
+
+        elements.append(Spacer(1,0.25*inch))
+
+        subtitle = Paragraph(
+
+            "<b>Enterprise Resume Evaluation Report</b>",
+
+            self.styles["Heading2"]
+
+        )
+
+        elements.append(subtitle)
+
+        elements.append(Spacer(1,0.20*inch))
+
+        info = [
+
+            ["Candidate",candidate_name],
+
+            ["Department",department],
+
+            ["Job Role",job_role],
+
+            ["Generated On",
+
+             datetime.now().strftime("%d-%m-%Y %H:%M")]
+
+        ]
+
+        table = Table(info,colWidths=[2.2*inch,4*inch])
+
+        table.setStyle(
+
+            TableStyle([
+
+                ("BACKGROUND",(0,0),(-1,0),colors.lightblue),
+
+                ("GRID",(0,0),(-1,-1),1,colors.grey),
+
+                ("BACKGROUND",(0,0),(0,-1),colors.whitesmoke),
+
+                ("BOTTOMPADDING",(0,0),(-1,-1),8),
+
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica")
+
+            ])
+
+        )
+
+        elements.append(table)
+
+        elements.append(Spacer(1,0.25*inch))
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Resume Statistics</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        stats = [
+
+            ["Words",statistics["Words"]],
+
+            ["Characters",statistics["Characters"]],
+
+            ["Sentences",statistics["Sentences"]],
+
+            ["Lines",statistics["Lines"]]
+
+        ]
+
+        table = Table(stats)
+
+        table.setStyle(
+
+            TableStyle([
+
+                ("GRID",(0,0),(-1,-1),1,colors.grey),
+
+                ("BACKGROUND",(0,0),(0,-1),colors.beige)
+
+            ])
+
+        )
+
+        elements.append(table)
+
+        elements.append(Spacer(1,0.25*inch))
+
+        score_table = [
+
+            ["ATS Score",f"{ats_score}%"],
+
+            ["ML Prediction",f"{ml_score}%"],
+
+            ["Deep Learning",f"{dl_score}%"]
+
+        ]
+
+        table = Table(score_table)
+
+        table.setStyle(
+
+            TableStyle([
+
+                ("GRID",(0,0),(-1,-1),1,colors.black),
+
+                ("BACKGROUND",(0,0),(0,-1),colors.lightgrey)
+
+            ])
+
+        )
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Prediction Scores</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        elements.append(table)
+
+        elements.append(Spacer(1,0.25*inch))
+
+        matched = ", ".join(matched_skills)
+
+        missing = ", ".join(missing_skills)
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Matched Skills</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        elements.append(
+
+            Paragraph(
+
+                matched,
+
+                self.styles["BodyText"]
+
+            )
+
+        )
+
+        elements.append(Spacer(1,0.20*inch))
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Missing Skills</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        elements.append(
+
+            Paragraph(
+
+                missing,
+
+                self.styles["BodyText"]
+
+            )
+
+        )
+
+        elements.append(Spacer(1,0.20*inch))
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>AI Recommendation</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        elements.append(
+
+            Paragraph(
+
+                recommendation,
+
+                self.styles["BodyText"]
+
+            )
+
+        )
+
+        elements.append(Spacer(1,0.30*inch))
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Generated by Resume Intelligence AI v8.0</b>",
+
+                self.styles["Italic"]
+
+            )
+
+        )
+
+        pdf.build(elements)
+
+        return filename

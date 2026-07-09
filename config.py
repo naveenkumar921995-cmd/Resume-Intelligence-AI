@@ -1,0 +1,221 @@
+"""
+=========================================================
+Resume Intelligence AI
+Enterprise AI Career Intelligence Platform
+Configuration File
+Author : Naveen Kumar
+Version : 8.0
+=========================================================
+"""
+
+# ==========================================================
+# Application
+# ==========================================================
+
+APP_NAME = "Resume Intelligence AI"
+
+APP_VERSION = "8.0 Enterprise"
+
+PAGE_TITLE = "Resume Intelligence AI"
+
+PAGE_ICON = "🤖"
+
+LAYOUT = "wide"
+
+# ==========================================================
+# Theme
+# ==========================================================
+
+PRIMARY_COLOR = "#2563EB"
+
+SECONDARY_COLOR = "#0F172A"
+
+SUCCESS_COLOR = "#22C55E"
+
+WARNING_COLOR = "#F59E0B"
+
+ERROR_COLOR = "#EF4444"
+
+BACKGROUND = "#F8FAFC"
+
+# ==========================================================
+# Upload
+# ==========================================================
+
+SUPPORTED_FILES = [
+
+    "pdf",
+
+    "docx"
+
+]
+
+MAX_FILE_SIZE = 25
+
+# ==========================================================
+# Resume Limits
+# ==========================================================
+
+MIN_WORDS = 100
+
+MAX_WORDS = 5000
+
+# ==========================================================
+# ATS
+# ==========================================================
+
+ATS_PASS_SCORE = 70
+
+SIMILARITY_WEIGHT = 0.30
+
+SKILL_WEIGHT = 0.40
+
+EXPERIENCE_WEIGHT = 0.20
+
+EDUCATION_WEIGHT = 0.10
+
+# ==========================================================
+# Machine Learning
+# ==========================================================
+
+MODEL_PATH = "models/"
+
+LINEAR_MODEL = MODEL_PATH + "regression_model.pkl"
+
+RANDOM_FOREST_MODEL = MODEL_PATH + "random_forest.pkl"
+
+XGBOOST_MODEL = MODEL_PATH + "xgboost.pkl"
+
+SCALER = MODEL_PATH + "scaler.pkl"
+
+LABEL_ENCODER = MODEL_PATH + "label_encoder.pkl"
+
+TFIDF = MODEL_PATH + "tfidf_vectorizer.pkl"
+
+DEEP_MODEL = MODEL_PATH + "deep_learning_model.keras"
+
+# ==========================================================
+# Data
+# ==========================================================
+
+JOB_DATA = "data/job_roles.csv"
+
+SKILLS = "data/skills_master.csv"
+
+LEARNING = "data/learning_paths.csv"
+
+SALARY = "data/salary_data.csv"
+
+# ==========================================================
+# Dashboard
+# ==========================================================
+
+TOTAL_DEPARTMENTS = 30
+
+TOTAL_JOB_ROLES = 450
+
+TOTAL_SKILLS = 5000
+
+TOTAL_AI_MODULES = 15
+
+# ==========================================================
+# Charts
+# ==========================================================
+
+CHART_HEIGHT = 450
+
+PIE_HOLE = 0.55
+
+# ==========================================================
+# Recruiter Dashboard
+# ==========================================================
+
+MAX_RESUMES = 20
+
+TOP_CANDIDATES = 5
+
+# ==========================================================
+# AI Modules
+# ==========================================================
+
+ENABLE_EDA = True
+
+ENABLE_ML = True
+
+ENABLE_DL = True
+
+ENABLE_GENAI = True
+
+ENABLE_INTERVIEW = True
+
+ENABLE_EMAIL = True
+
+ENABLE_COVER = True
+
+ENABLE_ROADMAP = True
+
+ENABLE_RECRUITER = True
+
+# ==========================================================
+# LLM
+# ==========================================================
+
+OLLAMA_MODEL = "llama3"
+
+OPENAI_MODEL = "gpt-4o-mini"
+
+TEMPERATURE = 0.3
+
+MAX_TOKENS = 1000
+
+# ==========================================================
+# Footer
+# ==========================================================
+
+FOOTER = "Developed by Naveen Kumar"
+
+COPYRIGHT = "© 2026 Resume Intelligence AI"
+
+# ==========================================================
+# Menu
+# ==========================================================
+
+SIDEBAR_MENU = [
+
+    "🏠 Dashboard",
+
+    "📄 Resume Analyzer",
+
+    "📊 ATS Analysis",
+
+    "🧠 NLP Analysis",
+
+    "📈 EDA Dashboard",
+
+    "🤖 Machine Learning",
+
+    "🧬 Deep Learning",
+
+    "🎯 Recruiter Dashboard",
+
+    "💼 Salary Prediction",
+
+    "📚 Learning Roadmap",
+
+    "💬 AI Career Coach",
+
+    "🎤 Interview Generator",
+
+    "📜 Cover Letter",
+
+    "📧 Email Generator",
+
+    "👤 LinkedIn Optimizer",
+
+    "💻 GitHub Portfolio",
+
+    "📑 Executive Report",
+
+    "⚙ Settings"
+
+]
