@@ -208,3 +208,14 @@ class LLMEngine:
             )
 
         }
+generate()
+
+chat()
+
+summarize()
+
+career_advice()
+
+cover_letter()
+
+interview_questions()

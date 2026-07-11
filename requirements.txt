@@ -17,3 +17,23 @@ wordcloud
 networkx
 scipy
 reportlab
+# Core
+streamlit
+pandas
+numpy
+
+# ML
+scikit-learn
+xgboost
+
+# AI
+openai
+sentence-transformers
+
+# PDF
+pdfplumber
+python-docx
+
+# Visualization
+plotly
+matplotlib

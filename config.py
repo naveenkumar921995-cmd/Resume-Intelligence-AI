@@ -22,6 +22,16 @@ PAGE_ICON = "🤖"
 
 LAYOUT = "wide"
 
+APP_NAME = "NEXUS AI"
+
+VERSION = "1.0"
+
+AUTHOR = "Naveen Kumar"
+
+THEME = "Dark"
+
+MAX_FILE_SIZE = 10
+
 # ==========================================================
 # Theme
 # ==========================================================

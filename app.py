@@ -1,8 +1,7 @@
 """
 =========================================================
-Resume Intelligence AI
-Enterprise AI Career Intelligence Platform
-Version : 8.0
+NEXUS AI
+Intelligent Talent Intelligence Platform
 Author : Naveen Kumar
 =========================================================
 """
@@ -68,252 +67,22 @@ st.markdown("""
 # -----------------------------
 # Sidebar
 # -----------------------------
+from ui.sidebar import render_sidebar
 
-st.sidebar.image(
-    "https://img.icons8.com/color/96/artificial-intelligence.png",
-    width=90
-)
-
-st.sidebar.title(APP_NAME)
-
-st.sidebar.caption(APP_VERSION)
-
-menu = st.sidebar.radio(
-
-    "Navigation",
-
-    SIDEBAR_MENU
-
-)
-
-st.sidebar.divider()
-
-st.sidebar.success("Enterprise Edition")
-
-st.sidebar.caption(FOOTER)
-
+menu = render_sidebar()
 # -----------------------------
 # Dashboard
 # -----------------------------
-
-if menu=="🏠 Dashboard":
-
-    st.title("🤖 Resume Intelligence AI")
-
-    st.markdown("""
-
-### Enterprise AI Career Intelligence Platform
-
-Analyze resumes using
-
-- ATS Logic
-- NLP
-- Machine Learning
-- Deep Learning
-- AI Career Guidance
-- Skill Gap Analysis
-- Recruiter Intelligence
-- Learning Recommendation
-- Resume Intelligence
-
----
-""")
-
-    c1,c2,c3,c4=st.columns(4)
-
-    c1.metric(
-        "Departments",
-        TOTAL_DEPARTMENTS
-    )
-
-    c2.metric(
-        "Job Roles",
-        TOTAL_JOB_ROLES
-    )
-
-    c3.metric(
-        "Skills",
-        TOTAL_SKILLS
-    )
-
-    c4.metric(
-        "AI Modules",
-        TOTAL_AI_MODULES
-    )
-
-    st.divider()
-
-    st.subheader("Technology Stack")
-        tech = pd.DataFrame({
-
-        "Category":[
-
-            "Programming",
-
-            "Analytics",
-
-            "Machine Learning",
-
-            "Deep Learning",
-
-            "Natural Language Processing",
-
-            "Generative AI",
-
-            "Visualization",
-
-            "Deployment"
-
-        ],
-
-        "Technology":[
-
-            "Python",
-
-            "NumPy • Pandas",
-
-            "Scikit-learn",
-
-            "TensorFlow",
-
-            "Regex • TF-IDF • spaCy",
-
-            "OpenAI • Ollama • Gemini",
-
-            "Matplotlib • Plotly",
-
-            "Streamlit"
-
-        ]
-
-    })
-
-    st.dataframe(
-
-        tech,
-
-        hide_index=True,
-
-        use_container_width=True
-
-    )
-
-    st.divider()
-
-    st.subheader("Platform Features")
-
-    feature1,feature2=st.columns(2)
-
-    with feature1:
-
-        st.success("Resume Parsing")
-
-        st.success("ATS Resume Analysis")
-
-        st.success("Skill Gap Analysis")
-
-        st.success("Resume Ranking")
-
-        st.success("Department-wise Analysis")
-
-        st.success("Learning Recommendation")
-
-        st.success("Interview Questions")
-
-    with feature2:
-
-        st.success("Machine Learning")
-
-        st.success("Deep Learning")
-
-        st.success("NLP Similarity")
-
-        st.success("AI Resume Review")
-
-        st.success("Cover Letter")
-
-        st.success("Email Generator")
-
-        st.success("Recruiter Dashboard")
-
-    st.divider()
-
-    st.subheader("Workflow")
-
-    st.markdown("""
-
-Upload Resume
-
-⬇
-
-Resume Parsing
-
-⬇
-
-Feature Engineering
-
-⬇
-
-ATS Analysis
-
-⬇
-
-NLP Similarity
-
-⬇
-
-Machine Learning Prediction
-
-⬇
-
-Deep Learning Prediction
-
-⬇
-
-Skill Gap Analysis
-
-⬇
-
-AI Recommendation
-
-⬇
-
-Generate Report
-
-""")
+from pages.dashboard import dashboard_page
+if menu == "🏠 Dashboard":
+    dashboard_page()
 # ==========================================================
 # Resume Analyzer
 # ==========================================================
+from pages.resume_analyzer import resume_analyzer_page
 
 elif menu == "📄 Resume Analyzer":
-
-    from core.resume_parser import parse_resume
-    from core.keyword_engine import KeywordEngine
-
-    st.header("📄 Resume Analyzer")
-
-    uploaded_file = st.file_uploader(
-        "Upload Resume",
-        type=SUPPORTED_FILES
-    )
-
-    if uploaded_file:
-
-        resume_text = parse_resume(uploaded_file)
-
-        st.subheader("Resume Preview")
-
-        st.text_area(
-            "",
-            resume_text,
-            height=300
-        )
-
-        st.metric(
-            "Total Words",
-            len(resume_text.split())
-        )
-
+    resume_analyzer_page()
 # ==========================================================
 # ATS Analysis
 # ==========================================================
@@ -339,10 +108,7 @@ elif menu == "📊 ATS Analysis":
 
         score = engine.ats_score(resume)
 
-        st.metric(
-            "ATS Score",
-            f"{score}%"
-        )
+        metric_card("ATS Score", ats_score)
 
         st.progress(score/100)
 
@@ -774,3 +540,5 @@ elif menu == "⚙ Settings":
     st.write("Application Version :", APP_VERSION)
 
     st.write("Developed By :", "Naveen Kumar")
+st.markdown("---")
+st.caption("NEXUS AI | Version 1.0.0")
