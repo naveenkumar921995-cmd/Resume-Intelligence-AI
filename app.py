@@ -1,4 +1,5 @@
 """
+"""
 =========================================================
 NEXUS AI
 Intelligent Talent Intelligence Platform
@@ -6,22 +7,59 @@ Author : Naveen Kumar
 =========================================================
 """
 
+# ==========================================================
+# Standard Library Imports
+# ==========================================================
+
+
+# ==========================================================
+# Third Party Imports
+# ==========================================================
+
 import streamlit as st
 import pandas as pd
+
+# ==========================================================
+# Configuration
+# ==========================================================
+
+from config import *
+
+# ==========================================================
+# UI Components
+# ==========================================================
+
+from ui.sidebar import render_sidebar
+
+# ==========================================================
+# Page Modules
+# ==========================================================
+
+from pages.dashboard import dashboard_page
+from pages.resume_analyzer import resume_analyzer_page
+# from pages.ats_analysis import ats_analysis_page
+# from pages.analytics import analytics_page
+# from pages.ml_prediction import ml_prediction_page
+# from pages.deep_learning import deep_learning_page
+# from pages.interview import interview_page
+# from pages.cover_letter import cover_letter_page
+# from pages.learning import learning_page
+# from pages.executive_report import executive_report_page
+
+# ==========================================================
+# Load Custom CSS
+# ==========================================================
+
 def load_css():
-    with open("assets/style.css") as f:
+    with open("assets/style.css", "r", encoding="utf-8") as f:
         st.markdown(
             f"<style>{f.read()}</style>",
             unsafe_allow_html=True
         )
 
-load_css()
-
-from config import *
-
-# -----------------------------
-# Page Configuration
-# -----------------------------
+# ==========================================================
+# Streamlit Page Configuration
+# ==========================================================
 
 st.set_page_config(
     page_title=PAGE_TITLE,
@@ -30,9 +68,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# -----------------------------
-# Custom CSS
-# -----------------------------
+# ==========================================================
+# Load Styles
+# ==========================================================
+
+load_css()
+
+# ==========================================================
+# Additional Custom CSS
+# ==========================================================
 
 st.markdown("""
 <style>
@@ -62,27 +106,29 @@ st.markdown("""
 }
 
 </style>
-""",unsafe_allow_html=True)
-
+""", unsafe_allow_html=True)
 # -----------------------------
 # Sidebar
 # -----------------------------
+# Imports
+import streamlit as st
+
 from ui.sidebar import render_sidebar
 
-menu = render_sidebar()
-# -----------------------------
-# Dashboard
-# -----------------------------
 from pages.dashboard import dashboard_page
+from pages.resume_analyzer import resume_analyzer_page
+from pages.ats_analysis import ats_analysis_page
+
+# Sidebar
+menu = render_sidebar()
+
+# Routing
 if menu == "🏠 Dashboard":
     dashboard_page()
-# ==========================================================
-# Resume Analyzer
-# ==========================================================
-from pages.resume_analyzer import resume_analyzer_page
 
 elif menu == "📄 Resume Analyzer":
     resume_analyzer_page()
+
 # ==========================================================
 # ATS Analysis
 # ==========================================================
@@ -159,11 +205,13 @@ elif menu == "📈 EDA Dashboard":
 # ==========================================================
 # Machine Learning
 # ==========================================================
-from core.ml_prediction import MLPredictor
+elif menu == "🤖 Machine Learning":
 
-st.header("🤖 Machine Learning Prediction")
+    from core.ml_prediction import MLPredictor
 
-ml = MLPredictor()
+    st.header("🤖 Machine Learning Prediction")
+
+    ml = MLPredictor()
 
 comparison = ml.train_models()
 
