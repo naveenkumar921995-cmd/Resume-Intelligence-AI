@@ -37,15 +37,20 @@ from ui.sidebar import render_sidebar
 
 from pages.dashboard import dashboard_page
 from pages.resume_analyzer import resume_analyzer_page
-# from pages.ats_analysis import ats_analysis_page
-# from pages.analytics import analytics_page
-# from pages.ml_prediction import ml_prediction_page
-# from pages.deep_learning import deep_learning_page
-# from pages.interview import interview_page
-# from pages.cover_letter import cover_letter_page
-# from pages.learning import learning_page
-# from pages.executive_report import executive_report_page
-
+from pages.ats_analysis import ats_analysis_page
+from pages.analytics import analytics_page
+from pages.ml_prediction import ml_prediction_page
+from pages.deep_learning import deep_learning_page
+from pages.interview import interview_page
+from pages.cover_letter import cover_letter_page
+from pages.learning import learning_page
+from pages.executive_report import executive_report_page
+from pages.recruiter_dashboard import recruiter_dashboard_page
+from pages.salary_prediction import salary_prediction_page
+from pages.learning_roadmap import learning_roadmap_page
+from pages.ai_career_coach import ai_career_coach_page
+from pages.interview_generator import interview_generator_page
+from pages.email_generator import email_generator_page
 # ==========================================================
 # Load Custom CSS
 # ==========================================================
@@ -205,294 +210,62 @@ elif menu == "📈 EDA Dashboard":
 # ==========================================================
 # Machine Learning
 # ==========================================================
+
 elif menu == "🤖 Machine Learning":
-
-    from core.ml_prediction import MLPredictor
-
-    st.header("🤖 Machine Learning Prediction")
-
-    ml = MLPredictor()
-
-comparison = ml.train_models()
-
-st.subheader("📊 Model Comparison")
-
-st.dataframe(
-    comparison,
-    use_container_width=True
-)
-
-st.divider()
-
-st.subheader("Predict Hiring Score")
-
-experience = st.slider("Experience",0,20,3)
-
-skills = st.slider("Skills",0,40,15)
-
-education = st.slider("Education Level",1,5,3)
-
-projects = st.slider("Projects",0,20,5)
-
-certifications = st.slider("Certifications",0,15,2)
-
-model = st.selectbox(
-
-    "Select Model",
-
-    comparison["Model"]
-
-)
-
-if st.button("Predict"):
-
-    score = ml.predict(
-
-        experience,
-
-        skills,
-
-        education,
-
-        projects,
-
-        certifications,
-
-        model
-
-    )
-
-    st.metric(
-
-        "Predicted Hiring Score",
-
-        f"{score}%"
-
-    )
+    ml_prediction_page()
 
 # ==========================================================
 # Deep Learning
 # ==========================================================
+
 elif menu == "🧬 Deep Learning":
+    deep_learning_page()
 
-    from core.deep_learning import DeepLearningModel
-
-    st.header("🧬 Deep Learning Hiring Prediction")
-
-    dl = DeepLearningModel()
-
-    experience = st.slider("Experience",0,20,4)
-
-    skills = st.slider("Skills",0,40,15)
-
-    projects = st.slider("Projects",0,20,5)
-
-    education = st.slider("Education",1,5,3)
-
-    certifications = st.slider("Certifications",0,15,2)
-
-    if st.button("Predict using Neural Network"):
-
-        report = dl.full_report(
-
-            experience,
-
-            skills,
-
-            projects,
-
-            education,
-
-            certifications
-
-        )
-
-        st.metric(
-
-            "Hiring Score",
-
-            f"{report['Hiring Score']}%"
-
-        )
-
-        st.success(
-
-            f"Confidence : {report['Confidence']}"
-
-        )
-
-        st.info(
-
-            report["Recommendation"]
-
-        )
 # ==========================================================
 # Recruiter Dashboard
 # ==========================================================
-
 elif menu == "🎯 Recruiter Dashboard":
-
-    st.header("🎯 Recruiter Dashboard")
-
-    st.success(
-        "Upload multiple resumes to compare candidates."
-    )
+    recruiter_dashboard_page()
 
 # ==========================================================
 # Salary Prediction
 # ==========================================================
 
 elif menu == "💼 Salary Prediction":
+    salary_prediction_page()
 
-    st.header("💼 Salary Prediction")
-
-    exp = st.slider(
-        "Experience",
-        0,
-        20,
-        2
-    )
-
-    st.metric(
-        "Estimated Salary",
-        f"₹ {5+exp*2} LPA"
-    )
-    # ==========================================================
+# ==========================================================
 # Learning Roadmap
 # ==========================================================
 
 elif menu == "📚 Learning Roadmap":
-
-    from core.learning_recommender import LearningRecommender
-
-    st.header("📚 AI Learning Roadmap")
-
-    lr = LearningRecommender()
-
-    df = lr.learning
-
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+    learning_roadmap_page()
 
 # ==========================================================
 # AI Career Coach
 # ==========================================================
 
 elif menu == "💬 AI Career Coach":
-
-    from core.llm_engine import AIResumeCoach
-
-    st.header("💬 AI Career Coach")
-
-    resume = st.text_area("Paste Resume")
-
-    if st.button("Review Resume"):
-
-        coach = AIResumeCoach()
-
-        st.write(
-            coach.review(resume)
-        )
+    ai_career_coach_page()
 
 # ==========================================================
 # Interview Generator
 # ==========================================================
 
 elif menu == "🎤 Interview Generator":
-
-    from core.interview_generator import InterviewGenerator
-
-    st.header("🎤 AI Interview Questions")
-
-    role = st.text_input("Target Role")
-
-    if st.button("Generate"):
-
-        generator = InterviewGenerator()
-
-        questions = generator.generate(role)
-
-        for q in questions:
-
-            st.write("•", q)
+    interview_generator_page()
 
 # ==========================================================
 # Cover Letter
 # ==========================================================
-
 elif menu == "📜 Cover Letter":
-
-    from core.cover_letter import CoverLetterGenerator
-
-    st.header("📜 Cover Letter")
-
-    name = st.text_input("Name")
-
-    company = st.text_input("Company")
-
-    role = st.text_input("Role")
-
-    if st.button("Generate Cover Letter"):
-
-        cover = CoverLetterGenerator()
-
-        st.text_area(
-
-            "",
-
-            cover.generate(
-
-                name,
-
-                company,
-
-                role
-
-            ),
-
-            height=350
-
-        )
+    cover_letter_page()
 
 # ==========================================================
 # Email Generator
 # ==========================================================
-
 elif menu == "📧 Email Generator":
-
-    from core.email_generator import EmailGenerator
-
-    st.header("📧 HR Email Generator")
-
-    name = st.text_input("Candidate")
-
-    company = st.text_input("Company")
-
-    role = st.text_input("Role")
-
-    if st.button("Generate Email"):
-
-        email = EmailGenerator()
-
-        st.text_area(
-
-            "",
-
-            email.application_email(
-
-                name,
-
-                company,
-
-                role
-
-            ),
-
-            height=300
-
-        )
+    email_generator_page()
 
 # ==========================================================
 # LinkedIn Optimizer
@@ -517,76 +290,12 @@ elif menu == "💻 GitHub Portfolio":
 # ==========================================================
 # Executive Report
 # ==========================================================
-
 elif menu == "📑 Executive Report":
-
-    st.header("📑 Executive AI Report")
-
-    from core.report_generator import ReportGenerator
-
-    if st.button("Generate Sample Report"):
-
-        generator = ReportGenerator()
-
-        pdf = generator.generate_report(
-
-            candidate_name="Naveen Kumar",
-
-            department="Data Science",
-
-            job_role="Data Analyst",
-
-            ats_score=88,
-
-            matched_skills=["Python","Pandas","SQL"],
-
-            missing_skills=["Power BI","AWS"],
-
-            ml_score=91,
-
-            dl_score=93,
-
-            recommendation="Excellent candidate with strong analytical skills.",
-
-            statistics={
-
-                "Words":620,
-
-                "Characters":4200,
-
-                "Sentences":41,
-
-                "Lines":86
-
-            }
-
-        )
-
-        with open(pdf, "rb") as file:
-
-            st.download_button(
-
-                "📄 Download AI Report",
-
-                file,
-
-                file_name="Resume_Report.pdf",
-
-                mime="application/pdf"
-
-            )
-st.success("Report Generated Successfully!")
+    executive_report_page()
 
 # ==========================================================
 # Settings
 # ==========================================================
 
-elif menu == "⚙ Settings":
-
-    st.header("⚙ Settings")
-
-    st.write("Application Version :", APP_VERSION)
-
-    st.write("Developed By :", "Naveen Kumar")
-st.markdown("---")
-st.caption("NEXUS AI | Version 1.0.0")
+elif menu == "⚙️ Settings":
+    settings_page()
