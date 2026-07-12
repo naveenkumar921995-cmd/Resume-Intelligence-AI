@@ -1,23 +1,49 @@
+"""
+=========================================================
+NEXUS AI
+Sidebar Navigation
+Author : Naveen Kumar
+=========================================================
+"""
 
-st.sidebar.image(
-    "https://img.icons8.com/color/96/artificial-intelligence.png",
-    width=90
+import streamlit as st
+
+from config import (
+    APP_NAME,
+    APP_VERSION,
+    SIDEBAR_MENU,
+    FOOTER
 )
 
-st.sidebar.title(APP_NAME)
 
-st.sidebar.caption(APP_VERSION)
+def render_sidebar():
+    """
+    Render application sidebar
+    Returns:
+        str : Selected menu item
+    """
 
-menu = st.sidebar.radio(
+    st.sidebar.image(
+        "https://img.icons8.com/color/96/artificial-intelligence.png",
+        width=90
+    )
 
-    "Navigation",
+    st.sidebar.title(APP_NAME)
 
-    SIDEBAR_MENU
+    st.sidebar.caption(APP_VERSION)
 
-)
+    st.sidebar.markdown("---")
 
-st.sidebar.divider()
+    menu = st.sidebar.radio(
+        "📂 Navigation",
+        SIDEBAR_MENU,
+        label_visibility="visible"
+    )
 
-st.sidebar.success("Enterprise Edition")
+    st.sidebar.markdown("---")
 
-st.sidebar.caption(FOOTER)
+    st.sidebar.success("🚀 Enterprise Edition")
+
+    st.sidebar.caption(FOOTER)
+
+    return menu

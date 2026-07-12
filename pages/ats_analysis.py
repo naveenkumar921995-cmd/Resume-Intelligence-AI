@@ -1,7 +1,15 @@
-import streamlit as st
-import pandas as pd
+"""
+=========================================================
+NEXUS AI
+ATS Analysis
+Author : Naveen Kumar
+=========================================================
+"""
 
-from core.resume_parser import parse_resume
+import streamlit as st
+
+from config import SUPPORTED_FILES
+from core.resume_parser import ResumeParser
 from core.keyword_engine import KeywordEngine
 
 
@@ -11,18 +19,23 @@ def ats_analysis_page():
 
     uploaded_file = st.file_uploader(
         "Upload Resume",
-        type=["pdf", "docx"],
-        key="ats"
+        type=SUPPORTED_FILES,
+        key="ats_upload"
     )
 
     if uploaded_file is None:
+        st.info("Please upload a resume.")
         return
 
-    resume_text = parse_resume(uploaded_file)
+    # Parse Resume
+    parser = ResumeParser()
+    result = parser.analyze(uploaded_file)
 
+    resume_text = result["raw_text"]
+
+    # ATS Engine
     engine = KeywordEngine()
 
-    # All skills from skills_master.csv
     required_skills = engine.skills["Skill"].tolist()
 
     report = engine.analyze(
@@ -30,7 +43,7 @@ def ats_analysis_page():
         required_skills
     )
 
-    st.success("Analysis Completed Successfully!")
+    st.success("ATS Analysis Completed Successfully")
 
     st.metric(
         "ATS Score",
@@ -42,24 +55,22 @@ def ats_analysis_page():
     col1, col2 = st.columns(2)
 
     with col1:
-
-        st.subheader("Matched Skills")
-
+        st.subheader("✅ Matched Skills")
         st.write(report["Matched Skills"])
 
     with col2:
-
-        st.subheader("Missing Skills")
-
+        st.subheader("❌ Missing Skills")
         st.write(report["Missing Skills"])
 
-    st.subheader("Technical Skills")
+    st.divider()
 
+    st.subheader("Technical Skills")
     st.write(report["Technical Skills"])
 
     st.subheader("Soft Skills")
-
     st.write(report["Soft Skills"])
+
+    st.divider()
 
     st.subheader("Skill Gap")
 
