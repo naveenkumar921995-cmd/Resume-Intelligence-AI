@@ -1,33 +1,70 @@
-def metric_card(
-    title,
-    value,
-    delta=None,
-    help_text=None
-):
-    elif menu == "📊 ATS Analysis":
+"""
+=========================================================
+NEXUS AI
+UI Components
+Author : Naveen Kumar
+=========================================================
+"""
 
-    st.header("📊 ATS Resume Analysis")
+import streamlit as st
 
-    uploaded_file = st.file_uploader(
-        "Upload Resume",
-        type=SUPPORTED_FILES,
-        key="ats"
+
+def metric_card(title, value, delta=None, help_text=None):
+    """
+    Display a metric card.
+    """
+
+    st.metric(
+        label=title,
+        value=value,
+        delta=delta,
+        help=help_text
     )
 
-    if uploaded_file:
 
-        from core.resume_parser import parse_resume
-        from core.keyword_engine import KeywordEngine
+def section_title(title):
+    """
+    Display a section heading.
+    """
 
-        resume = parse_resume(uploaded_file)
+    st.subheader(title)
 
-        engine = KeywordEngine()
 
-        score = engine.ats_score(resume)
+def info_card(message):
+    """
+    Display an information box.
+    """
 
-        st.metric(
-            "ATS Score",
-            f"{score}%"
-        )
+    st.info(message)
 
-        st.progress(score/100)
+
+def success_card(message):
+    """
+    Display a success message.
+    """
+
+    st.success(message)
+
+
+def warning_card(message):
+    """
+    Display a warning message.
+    """
+
+    st.warning(message)
+
+
+def error_card(message):
+    """
+    Display an error message.
+    """
+
+    st.error(message)
+
+
+def divider():
+    """
+    Display a horizontal divider.
+    """
+
+    st.divider()

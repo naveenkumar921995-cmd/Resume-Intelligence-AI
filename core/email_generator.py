@@ -1,9 +1,9 @@
 """
 =========================================================
-Resume Intelligence AI
-Professional Email Generator
+NEXUS AI
+Enterprise Professional Email Generator
 Author : Naveen Kumar
-Version : 6.0
+Version : 9.0
 =========================================================
 """
 
@@ -13,11 +13,33 @@ from datetime import datetime
 class EmailGenerator:
 
     def __init__(self):
-        pass
 
-    # ---------------------------------------------------
-    # Job Application Email
-    # ---------------------------------------------------
+        self.today = datetime.now().strftime("%d %B %Y")
+
+    # --------------------------------------------------
+    # Signature
+    # --------------------------------------------------
+
+    def signature(
+
+        self,
+
+        candidate_name
+
+    ):
+
+        return f"""
+
+Kind Regards,
+
+{candidate_name}
+
+Generated using NEXUS AI Career Intelligence Platform
+"""
+
+    # --------------------------------------------------
+    # Job Application
+    # --------------------------------------------------
 
     def application_email(
 
@@ -31,31 +53,27 @@ class EmailGenerator:
 
     ):
 
-        email = f"""
+        return f"""
 Subject: Application for {role}
 
 Dear Hiring Manager,
 
 I hope you are doing well.
 
-I am writing to express my interest in the {role} position at {company}.
+I am writing to apply for the position of {role} at {company}.
 
-My background includes experience in Python, Data Analytics, Machine Learning, AI, and software development. I have also developed multiple end-to-end projects demonstrating practical implementation of these skills.
+My experience includes Python, SQL, Machine Learning, Artificial Intelligence, Data Analytics, and end-to-end project development.
 
-I have attached my resume for your review and would appreciate the opportunity to discuss how I can contribute to your organization.
+I have attached my resume for your review.
 
-Thank you for your valuable time.
+I would appreciate the opportunity to discuss how I can contribute to your team.
 
-Kind Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
-
-    # ---------------------------------------------------
-    # HR Follow-up Email
-    # ---------------------------------------------------
+    # --------------------------------------------------
+    # Follow Up
+    # --------------------------------------------------
 
     def followup_email(
 
@@ -69,29 +87,25 @@ Kind Regards,
 
     ):
 
-        email = f"""
+        return f"""
 Subject: Follow-up Regarding {role} Application
 
 Dear Hiring Manager,
 
 I hope you are doing well.
 
-I wanted to follow up regarding my application for the {role} position at {company}.
+I wanted to politely follow up regarding my application for the {role} position at {company}.
 
-I remain very interested in this opportunity and would appreciate any updates regarding the recruitment process.
+I remain highly interested in joining your organization.
 
-Thank you for your consideration.
+Thank you for your time and consideration.
 
-Best Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
-
-    # ---------------------------------------------------
-    # Interview Thank You Email
-    # ---------------------------------------------------
+    # --------------------------------------------------
+    # Interview Thank You
+    # --------------------------------------------------
 
     def thankyou_email(
 
@@ -107,27 +121,23 @@ Best Regards,
 
     ):
 
-        email = f"""
-Subject: Thank You for the Interview Opportunity
+        return f"""
+Subject: Thank You for the Interview
 
 Dear {interviewer},
 
 Thank you for taking the time to interview me for the {role} position at {company}.
 
-It was a pleasure discussing the role and learning more about your organization.
+I enjoyed discussing the opportunity and learning more about your team.
 
-I appreciate the opportunity and look forward to hearing from you.
+I appreciate your consideration.
 
-Kind Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
-
-    # ---------------------------------------------------
-    # Interview Invitation Reply
-    # ---------------------------------------------------
+    # --------------------------------------------------
+    # Interview Acceptance
+    # --------------------------------------------------
 
     def interview_acceptance(
 
@@ -141,27 +151,23 @@ Kind Regards,
 
     ):
 
-        email = f"""
+        return f"""
 Subject: Interview Confirmation
 
 Dear Hiring Team,
 
 Thank you for inviting me to interview with {company}.
 
-I am pleased to confirm my availability for the interview scheduled on {interview_date}.
+I am pleased to confirm my availability on {interview_date}.
 
-I look forward to speaking with you.
+I look forward to meeting your team.
 
-Best Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
-
-    # ---------------------------------------------------
+    # --------------------------------------------------
     # Offer Acceptance
-    # ---------------------------------------------------
+    # --------------------------------------------------
 
     def offer_acceptance(
 
@@ -175,27 +181,23 @@ Best Regards,
 
     ):
 
-        email = f"""
+        return f"""
 Subject: Acceptance of Offer - {role}
 
 Dear Hiring Manager,
 
-Thank you for offering me the position of {role} at {company}.
+Thank you for offering me the role of {role} at {company}.
 
-I am delighted to accept the offer and look forward to joining your team.
+I am delighted to accept the offer and look forward to joining your organization.
 
-Thank you once again for this opportunity.
+Thank you once again.
 
-Warm Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
-
-    # ---------------------------------------------------
+    # --------------------------------------------------
     # Offer Decline
-    # ---------------------------------------------------
+    # --------------------------------------------------
 
     def offer_decline(
 
@@ -209,20 +211,112 @@ Warm Regards,
 
     ):
 
-        email = f"""
+        return f"""
 Subject: Offer for {role}
 
 Dear Hiring Manager,
 
-Thank you very much for offering me the position of {role} at {company}.
+Thank you very much for offering me the position of {role}.
 
-After careful consideration, I have decided to decline the offer at this time.
+After careful consideration, I have decided not to accept the offer.
 
-I sincerely appreciate your time and wish the organization continued success.
+I sincerely appreciate the opportunity and wish {company} continued success.
 
-Kind Regards,
-
-{candidate_name}
+{self.signature(candidate_name)}
 """
 
-        return email
+    # --------------------------------------------------
+    # Internship Application
+    # --------------------------------------------------
+
+    def internship_email(
+
+        self,
+
+        candidate_name,
+
+        company
+
+    ):
+
+        return f"""
+Subject: Internship Application
+
+Dear Hiring Manager,
+
+I am writing to express my interest in internship opportunities at {company}.
+
+I am currently building practical experience in Python, Machine Learning, AI, and Data Analytics through real-world projects.
+
+I would be grateful for an opportunity to contribute and learn.
+
+{self.signature(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Resignation Email
+    # --------------------------------------------------
+
+    def resignation_email(
+
+        self,
+
+        candidate_name,
+
+        company
+
+    ):
+
+        return f"""
+Subject: Resignation
+
+Dear Manager,
+
+Please accept this email as my formal resignation from {company}.
+
+I sincerely appreciate the opportunities and support provided during my tenure.
+
+Thank you for everything.
+
+{self.signature(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Generic Generator
+    # --------------------------------------------------
+
+    def generate(
+
+        self,
+
+        email_type,
+
+        **kwargs
+
+    ):
+
+        templates = {
+
+            "application": self.application_email,
+
+            "followup": self.followup_email,
+
+            "thankyou": self.thankyou_email,
+
+            "acceptance": self.interview_acceptance,
+
+            "offer_acceptance": self.offer_acceptance,
+
+            "offer_decline": self.offer_decline,
+
+            "internship": self.internship_email,
+
+            "resignation": self.resignation_email
+
+        }
+
+        if email_type not in templates:
+
+            raise ValueError("Invalid email type.")
+
+        return templates[email_type](**kwargs)

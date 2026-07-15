@@ -2,7 +2,7 @@
 =========================================================
 Resume Intelligence AI
 Professional PDF Report Generator
-Version : 8.0
+Version : 9.0 Enterprise
 Author : Naveen Kumar
 =========================================================
 """
@@ -11,6 +11,7 @@ import os
 from datetime import datetime
 
 from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -19,7 +20,6 @@ from reportlab.platypus import (
     Table,
     TableStyle
 )
-
 from reportlab.lib.units import inch
 
 
@@ -61,27 +61,53 @@ class ReportGenerator:
 
     ):
 
-        filename = f"reports/{candidate_name.replace(' ','_')}_Report.pdf"
+        filename = os.path.join(
 
-        pdf = SimpleDocTemplate(filename)
+            "reports",
+
+            f"{candidate_name.replace(' ','_')}_Report.pdf"
+
+        )
+
+        pdf = SimpleDocTemplate(
+
+            filename,
+
+            rightMargin=40,
+
+            leftMargin=40,
+
+            topMargin=40,
+
+            bottomMargin=40
+
+        )
 
         elements = []
 
+        # --------------------------------------------------
+        # Title
+        # --------------------------------------------------
+
+        title_style = self.styles["Title"]
+
+        title_style.alignment = TA_CENTER
+
         title = Paragraph(
 
-            "<b><font size=20>Resume Intelligence AI</font></b>",
+            "<font size=24><b>NEXUS AI</b></font>",
 
-            self.styles["Title"]
+            title_style
 
         )
 
         elements.append(title)
 
-        elements.append(Spacer(1,0.25*inch))
+        elements.append(Spacer(1, 0.15 * inch))
 
         subtitle = Paragraph(
 
-            "<b>Enterprise Resume Evaluation Report</b>",
+            "<b>Enterprise Resume Intelligence Report</b>",
 
             self.styles["Heading2"]
 
@@ -89,45 +115,63 @@ class ReportGenerator:
 
         elements.append(subtitle)
 
-        elements.append(Spacer(1,0.20*inch))
+        elements.append(Spacer(1, 0.25 * inch))
+
+        # --------------------------------------------------
+        # Candidate Information
+        # --------------------------------------------------
 
         info = [
 
-            ["Candidate",candidate_name],
+            ["Candidate Name", candidate_name],
 
-            ["Department",department],
+            ["Department", department],
 
-            ["Job Role",job_role],
+            ["Target Role", job_role],
 
-            ["Generated On",
+            [
 
-             datetime.now().strftime("%d-%m-%Y %H:%M")]
+                "Generated On",
+
+                datetime.now().strftime("%d-%m-%Y %I:%M %p")
+
+            ]
 
         ]
 
-        table = Table(info,colWidths=[2.2*inch,4*inch])
+        info_table = Table(
 
-        table.setStyle(
+            info,
+
+            colWidths=[2.2 * inch, 4.2 * inch]
+
+        )
+
+        info_table.setStyle(
 
             TableStyle([
 
-                ("BACKGROUND",(0,0),(-1,0),colors.lightblue),
+                ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
 
-                ("GRID",(0,0),(-1,-1),1,colors.grey),
+                ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#E8F1FD")),
 
-                ("BACKGROUND",(0,0),(0,-1),colors.whitesmoke),
+                ("FONTNAME", (0,0), (-1,-1), "Helvetica"),
 
-                ("BOTTOMPADDING",(0,0),(-1,-1),8),
+                ("BOTTOMPADDING", (0,0), (-1,-1), 8),
 
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica")
+                ("TOPPADDING", (0,0), (-1,-1), 8)
 
             ])
 
         )
 
-        elements.append(table)
+        elements.append(info_table)
 
-        elements.append(Spacer(1,0.25*inch))
+        elements.append(Spacer(1, 0.30 * inch))
+
+        # --------------------------------------------------
+        # Resume Statistics
+        # --------------------------------------------------
 
         elements.append(
 
@@ -141,55 +185,230 @@ class ReportGenerator:
 
         )
 
-        stats = [
+        stats_table = Table([
 
-            ["Words",statistics["Words"]],
+            [
 
-            ["Characters",statistics["Characters"]],
+                "Words",
 
-            ["Sentences",statistics["Sentences"]],
+                statistics.get("Words", 0)
 
-            ["Lines",statistics["Lines"]]
+            ],
 
-        ]
+            [
 
-        table = Table(stats)
+                "Characters",
 
-        table.setStyle(
+                statistics.get("Characters", 0)
+
+            ],
+
+            [
+
+                "Sentences",
+
+                statistics.get("Sentences", 0)
+
+            ],
+
+            [
+
+                "Lines",
+
+                statistics.get("Lines", 0)
+
+            ]
+
+        ])
+
+        stats_table.setStyle(
 
             TableStyle([
 
-                ("GRID",(0,0),(-1,-1),1,colors.grey),
+                ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
 
-                ("BACKGROUND",(0,0),(0,-1),colors.beige)
+                ("BACKGROUND", (0,0), (0,-1), colors.beige),
+
+                ("BOTTOMPADDING", (0,0), (-1,-1), 6)
 
             ])
 
         )
 
-        elements.append(table)
+        elements.append(stats_table)
 
-        elements.append(Spacer(1,0.25*inch))
+        elements.append(Spacer(1, 0.30 * inch))
 
-        score_table = [
+        # --------------------------------------------------
+        # AI Scores
+        # --------------------------------------------------
 
-            ["ATS Score",f"{ats_score}%"],
+        elements.append(
 
-            ["ML Prediction",f"{ml_score}%"],
+            Paragraph(
 
-            ["Deep Learning",f"{dl_score}%"]
+                "<b>AI Evaluation Scores</b>",
 
-        ]
+                self.styles["Heading2"]
 
-        table = Table(score_table)
+            )
 
-        table.setStyle(
+        )
+
+        score_table = Table([
+
+            ["ATS Score", f"{ats_score}%"],
+
+            ["Machine Learning", f"{ml_score}%"],
+
+            ["Deep Learning", f"{dl_score}%"]
+
+        ])
+
+        score_table.setStyle(
 
             TableStyle([
 
-                ("GRID",(0,0),(-1,-1),1,colors.black),
+                ("GRID", (0,0), (-1,-1), 0.5, colors.black),
 
-                ("BACKGROUND",(0,0),(0,-1),colors.lightgrey)
+                ("BACKGROUND", (0,0), (0,-1), colors.lightgrey),
+
+                ("BOTTOMPADDING", (0,0), (-1,-1), 7)
+
+            ])
+
+        )
+
+        elements.append(score_table)
+
+        elements.append(Spacer(1, 0.30 * inch))
+        # --------------------------------------------------
+        # Skills Summary
+        # --------------------------------------------------
+
+        elements.append(
+
+            Paragraph(
+
+                "<b>Skills Analysis</b>",
+
+                self.styles["Heading2"]
+
+            )
+
+        )
+
+        matched_text = (
+
+            ", ".join(matched_skills)
+
+            if matched_skills
+
+            else "No matched skills found."
+
+        )
+
+        missing_text = (
+
+            ", ".join(missing_skills)
+
+            if missing_skills
+
+            else "No missing skills."
+
+        )
+
+        skills_table = Table([
+
+            ["Matched Skills", matched_text],
+
+            ["Missing Skills", missing_text]
+
+        ], colWidths=[2.0 * inch, 4.4 * inch])
+
+        skills_table.setStyle(
+
+            TableStyle([
+
+                ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+
+                ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#E8F5E9")),
+
+                ("BOTTOMPADDING", (0,0), (-1,-1), 8),
+
+                ("TOPPADDING", (0,0), (-1,-1), 8),
+
+                ("VALIGN", (0,0), (-1,-1), "TOP")
+
+            ])
+
+        )
+
+        elements.append(skills_table)
+
+        elements.append(Spacer(1, 0.30 * inch))
+
+        # --------------------------------------------------
+        # Overall AI Decision
+        # --------------------------------------------------
+
+        final_score = round(
+
+            (ats_score + ml_score + dl_score) / 3,
+
+            2
+
+        )
+
+        if final_score >= 95:
+
+            grade = "A+"
+
+            decision = "🟢 Outstanding Candidate"
+
+        elif final_score >= 85:
+
+            grade = "A"
+
+            decision = "🟢 Highly Recommended"
+
+        elif final_score >= 75:
+
+            grade = "B+"
+
+            decision = "🟡 Recommended"
+
+        elif final_score >= 60:
+
+            grade = "B"
+
+            decision = "🟠 Consider After Review"
+
+        else:
+
+            grade = "C"
+
+            decision = "🔴 Not Recommended"
+
+        decision_table = Table([
+
+            ["Overall Score", f"{final_score}%"],
+
+            ["Grade", grade],
+
+            ["Hiring Decision", decision]
+
+        ])
+
+        decision_table.setStyle(
+
+            TableStyle([
+
+                ("GRID", (0,0), (-1,-1), 0.5, colors.black),
+
+                ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#FFF3CD")),
+
+                ("BOTTOMPADDING", (0,0), (-1,-1), 8)
 
             ])
 
@@ -199,7 +418,7 @@ class ReportGenerator:
 
             Paragraph(
 
-                "<b>Prediction Scores</b>",
+                "<b>Overall Assessment</b>",
 
                 self.styles["Heading2"]
 
@@ -207,65 +426,13 @@ class ReportGenerator:
 
         )
 
-        elements.append(table)
+        elements.append(decision_table)
 
-        elements.append(Spacer(1,0.25*inch))
+        elements.append(Spacer(1, 0.30 * inch))
 
-        matched = ", ".join(matched_skills)
-
-        missing = ", ".join(missing_skills)
-
-        elements.append(
-
-            Paragraph(
-
-                "<b>Matched Skills</b>",
-
-                self.styles["Heading2"]
-
-            )
-
-        )
-
-        elements.append(
-
-            Paragraph(
-
-                matched,
-
-                self.styles["BodyText"]
-
-            )
-
-        )
-
-        elements.append(Spacer(1,0.20*inch))
-
-        elements.append(
-
-            Paragraph(
-
-                "<b>Missing Skills</b>",
-
-                self.styles["Heading2"]
-
-            )
-
-        )
-
-        elements.append(
-
-            Paragraph(
-
-                missing,
-
-                self.styles["BodyText"]
-
-            )
-
-        )
-
-        elements.append(Spacer(1,0.20*inch))
+        # --------------------------------------------------
+        # AI Recommendation
+        # --------------------------------------------------
 
         elements.append(
 
@@ -283,7 +450,7 @@ class ReportGenerator:
 
             Paragraph(
 
-                recommendation,
+                recommendation.replace("\n", "<br/>"),
 
                 self.styles["BodyText"]
 
@@ -291,19 +458,32 @@ class ReportGenerator:
 
         )
 
-        elements.append(Spacer(1,0.30*inch))
+        elements.append(Spacer(1, 0.35 * inch))
 
-        elements.append(
+        # --------------------------------------------------
+        # Footer
+        # --------------------------------------------------
 
-            Paragraph(
+        footer = Paragraph(
 
-                "<b>Generated by Resume Intelligence AI v8.0</b>",
+            """
+            <font size=10 color='grey'>
+            Generated by <b>NEXUS AI</b><br/>
+            Enterprise Resume Intelligence Platform<br/><br/>
+            Author : Naveen Kumar<br/>
+            © 2026 All Rights Reserved
+            </font>
+            """,
 
-                self.styles["Italic"]
-
-            )
+            self.styles["BodyText"]
 
         )
+
+        elements.append(footer)
+
+        # --------------------------------------------------
+        # Build PDF
+        # --------------------------------------------------
 
         pdf.build(elements)
 

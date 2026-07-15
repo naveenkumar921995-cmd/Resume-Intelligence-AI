@@ -1,31 +1,25 @@
 streamlit
 pandas
 numpy
-
-# Machine Learning
 scikit-learn
 xgboost
-lightgbm
+tensorflow
 joblib
-scipy
 
-# AI / NLP
-openai
-sentence-transformers
-nltk
-spacy
-
-# Document Processing
-pdfplumber
-python-docx
-openpyxl
-
-# Visualization
 plotly
 matplotlib
-wordcloud
 
-# Utilities
-Pillow
-networkx
+pdfplumber
+python-docx
 reportlab
+openpyxl
+
+nltk
+spacy
+sentence-transformers
+openai
+
+Pillow
+wordcloud
+networkx
+scipy

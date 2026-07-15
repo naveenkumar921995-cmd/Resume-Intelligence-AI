@@ -1,9 +1,9 @@
 """
 =========================================================
-Resume Intelligence AI
-AI Cover Letter Generator
+NEXUS AI
+Enterprise AI Cover Letter Generator
 Author : Naveen Kumar
-Version : 6.0
+Version : 9.0
 =========================================================
 """
 
@@ -13,9 +13,201 @@ from datetime import datetime
 class CoverLetterGenerator:
 
     def __init__(self):
-        pass
 
-    # --------------------------------------
+        self.today = datetime.today().strftime("%d %B %Y")
+
+    # --------------------------------------------------
+    # Closing
+    # --------------------------------------------------
+
+    def closing(
+
+        self,
+
+        candidate_name
+
+    ):
+
+        return f"""
+
+Thank you for considering my application.
+
+I look forward to discussing how I can contribute to your organization.
+
+Sincerely,
+
+{candidate_name}
+"""
+
+    # --------------------------------------------------
+    # Professional Cover Letter
+    # --------------------------------------------------
+
+    def professional(
+
+        self,
+
+        candidate_name,
+
+        company,
+
+        department,
+
+        role,
+
+        experience,
+
+        matched_skills,
+
+        projects
+
+    ):
+
+        skills = ", ".join(matched_skills[:8])
+
+        return f"""
+Date: {self.today}
+
+Hiring Manager
+{company}
+
+Subject: Application for {role}
+
+Dear Hiring Manager,
+
+I am writing to express my interest in the position of {role} within your {department} department.
+
+With over {experience} years of professional experience, I have developed strong expertise in {skills} while delivering business-focused technical solutions.
+
+During my career I have completed approximately {projects} projects involving analytics, automation, machine learning, and artificial intelligence.
+
+I enjoy solving real-world business problems through technology and continuously improving my technical capabilities.
+
+{self.closing(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Fresher Template
+    # --------------------------------------------------
+
+    def fresher(
+
+        self,
+
+        candidate_name,
+
+        company,
+
+        department,
+
+        role,
+
+        matched_skills,
+
+        projects
+
+    ):
+
+        skills = ", ".join(matched_skills[:8])
+
+        return f"""
+Date: {self.today}
+
+Hiring Manager
+{company}
+
+Subject: Application for {role}
+
+Dear Hiring Manager,
+
+I am excited to apply for the {role} position in your {department} department.
+
+Although I am beginning my professional career, I have developed practical knowledge in {skills} through academic work and approximately {projects} hands-on projects.
+
+I am eager to learn, contribute, and grow within your organization.
+
+{self.closing(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Internship Template
+    # --------------------------------------------------
+
+    def internship(
+
+        self,
+
+        candidate_name,
+
+        company,
+
+        role,
+
+        matched_skills
+
+    ):
+
+        skills = ", ".join(matched_skills[:6])
+
+        return f"""
+Date: {self.today}
+
+Hiring Manager
+{company}
+
+Subject: Internship Application
+
+Dear Hiring Manager,
+
+I would like to apply for an internship opportunity as a {role}.
+
+My current skills include {skills}, and I have been strengthening them through practical projects and continuous learning.
+
+I would greatly appreciate an opportunity to contribute while learning from your experienced team.
+
+{self.closing(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Executive Template
+    # --------------------------------------------------
+
+    def executive(
+
+        self,
+
+        candidate_name,
+
+        company,
+
+        department,
+
+        role,
+
+        experience
+
+    ):
+
+        return f"""
+Date: {self.today}
+
+Hiring Manager
+{company}
+
+Subject: Executive Application - {role}
+
+Dear Hiring Manager,
+
+With more than {experience} years of leadership experience, I have successfully delivered strategic initiatives, led cross-functional teams, and driven operational excellence.
+
+I believe my leadership, technical expertise, and business-focused approach align well with your organization's objectives.
+
+{self.closing(candidate_name)}
+"""
+
+    # --------------------------------------------------
+    # Generate Cover Letter
+    # --------------------------------------------------
 
     def generate(
 
@@ -37,37 +229,56 @@ class CoverLetterGenerator:
 
     ):
 
-        today = datetime.today().strftime("%d %B %Y")
+        if experience <= 1:
 
-        skills = ", ".join(matched_skills[:8])
+            return self.fresher(
 
-        letter = f"""
+                candidate_name,
 
-Date: {today}
+                company,
 
-Hiring Manager
-{company}
+                department,
 
-Subject: Application for {role}
+                role,
 
-Dear Hiring Manager,
+                matched_skills,
 
-I am writing to express my interest in the {role} position within your {department} department.
+                projects
 
-With over {experience} years of professional experience and hands-on exposure to {skills}, I have developed practical problem-solving abilities while delivering successful projects.
+            )
 
-Throughout my career, I have completed approximately {projects} technical projects, strengthening my expertise in software development, analytics, automation, and continuous learning.
+        elif experience >= 10:
 
-My technical foundation includes Python, Machine Learning, Data Analysis, NLP, and modern AI tools. I enjoy solving real-world problems through data-driven approaches and continuously expanding my technical capabilities.
+            return self.executive(
 
-I would welcome the opportunity to discuss how my skills and experience can contribute to your organization's success.
+                candidate_name,
 
-Thank you for your time and consideration.
+                company,
 
-Sincerely,
+                department,
 
-{candidate_name}
+                role,
 
-"""
+                experience
 
-        return letter
+            )
+
+        else:
+
+            return self.professional(
+
+                candidate_name,
+
+                company,
+
+                department,
+
+                role,
+
+                experience,
+
+                matched_skills,
+
+                projects
+
+            )

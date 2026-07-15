@@ -1,16 +1,15 @@
 """
-====================================================
-Resume Intelligence AI
-NLP Similarity Engine
+=========================================================
+NEXUS AI
+Enterprise NLP Similarity Engine
 Author : Naveen Kumar
-Version : 5.0
-====================================================
+Version : 9.0
+=========================================================
 """
 
-import numpy as np
+import re
 
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 from sklearn.metrics.pairwise import cosine_similarity
 
 
@@ -19,28 +18,80 @@ class SimilarityEngine:
     def __init__(self):
 
         self.vectorizer = TfidfVectorizer(
-            stop_words="english"
+
+            stop_words="english",
+
+            lowercase=True
+
         )
 
-    # ----------------------------------------
-    # TF-IDF Vectorization
-    # ----------------------------------------
+    # --------------------------------------------------
+    # Clean Text
+    # --------------------------------------------------
 
-    def vectorize(self, resume, job):
+    def clean_text(self, text):
+
+        if text is None:
+
+            return ""
+
+        text = str(text).lower()
+
+        text = re.sub(r"[^a-zA-Z0-9 ]", " ", text)
+
+        text = re.sub(r"\s+", " ", text)
+
+        return text.strip()
+
+    # --------------------------------------------------
+    # Vectorization
+    # --------------------------------------------------
+
+    def vectorize(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
+
+        resume = self.clean_text(resume)
+
+        job = self.clean_text(job)
 
         vectors = self.vectorizer.fit_transform(
 
-            [resume, job]
+            [
+
+                resume,
+
+                job
+
+            ]
 
         )
 
         return vectors
 
-    # ----------------------------------------
-    # Cosine Similarity
-    # ----------------------------------------
+    # --------------------------------------------------
+    # Similarity Score
+    # --------------------------------------------------
 
-    def similarity_score(self, resume, job):
+    def similarity_score(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
+
+        if not resume or not job:
+
+            return 0.0
 
         vectors = self.vectorize(
 
@@ -50,7 +101,7 @@ class SimilarityEngine:
 
         )
 
-        similarity = cosine_similarity(
+        score = cosine_similarity(
 
             vectors[0],
 
@@ -60,69 +111,212 @@ class SimilarityEngine:
 
         return round(
 
-            similarity * 100,
+            score * 100,
 
             2
 
         )
 
-    # ----------------------------------------
-    # Similarity Grade
-    # ----------------------------------------
+    # --------------------------------------------------
+    # Grade
+    # --------------------------------------------------
 
-    def grade(self, score):
+    def grade(
 
-        if score >= 90:
+        self,
 
-            return "Excellent"
+        score
+
+    ):
+
+        if score >= 95:
+
+            return "A+"
+
+        elif score >= 85:
+
+            return "A"
 
         elif score >= 75:
 
-            return "Very Good"
+            return "B+"
 
-        elif score >= 60:
+        elif score >= 65:
 
-            return "Good"
-
-        elif score >= 40:
-
-            return "Average"
+            return "B"
 
         else:
 
-            return "Poor"
+            return "C"
 
-    # ----------------------------------------
-    # Recommendation
-    # ----------------------------------------
+    # --------------------------------------------------
+    # Hiring Status
+    # --------------------------------------------------
 
-    def recommendation(self, score):
+    def hiring_status(
 
-        if score >= 90:
+        self,
 
-            return "Resume is highly aligned with the selected job role."
+        score
+
+    ):
+
+        if score >= 95:
+
+            return "🟢 Outstanding Match"
+
+        elif score >= 85:
+
+            return "🟢 Highly Recommended"
 
         elif score >= 75:
 
-            return "Resume is well matched. Minor improvements recommended."
+            return "🟡 Recommended"
 
         elif score >= 60:
 
-            return "Improve missing technical skills and ATS keywords."
+            return "🟠 Consider After Review"
+
+        else:
+
+            return "🔴 Poor Match"
+
+    # --------------------------------------------------
+    # Confidence
+    # --------------------------------------------------
+
+    def confidence(
+
+        self,
+
+        score
+
+    ):
+
+        if score >= 90:
+
+            return "Very High"
+
+        elif score >= 75:
+
+            return "High"
+
+        elif score >= 60:
+
+            return "Medium"
+
+        else:
+
+            return "Low"
+
+    # --------------------------------------------------
+    # Recommendation
+    # --------------------------------------------------
+
+    def recommendation(
+
+        self,
+
+        score
+
+    ):
+
+        if score >= 90:
+
+            return (
+                "Excellent alignment between the resume and "
+                "the job description."
+            )
+
+        elif score >= 75:
+
+            return (
+                "Good match. Improve a few missing skills "
+                "to increase ATS performance."
+            )
+
+        elif score >= 60:
+
+            return (
+                "Average match. Add more technical keywords, "
+                "projects and measurable achievements."
+            )
 
         elif score >= 40:
 
-            return "Resume requires significant optimization."
+            return (
+                "Resume requires optimization before applying."
+            )
 
-        return "Resume requires major improvements before applying."
+        else:
 
-    # ----------------------------------------
+            return (
+                "Resume has very low similarity with the target role."
+            )
+
+    # --------------------------------------------------
+    # Keyword Match
+    # --------------------------------------------------
+
+    def keyword_match(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
+
+        resume_words = set(
+
+            self.clean_text(resume).split()
+
+        )
+
+        job_words = set(
+
+            self.clean_text(job).split()
+
+        )
+
+        if len(job_words) == 0:
+
+            return 0
+
+        matched = resume_words.intersection(job_words)
+
+        return round(
+
+            len(matched) / len(job_words) * 100,
+
+            2
+
+        )
+
+    # --------------------------------------------------
     # Complete Analysis
-    # ----------------------------------------
+    # --------------------------------------------------
 
-    def analyze(self, resume, job):
+    def analyze(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
 
         score = self.similarity_score(
+
+            resume,
+
+            job
+
+        )
+
+        keyword_score = self.keyword_match(
 
             resume,
 
@@ -134,10 +328,14 @@ class SimilarityEngine:
 
             "Similarity Score": score,
 
+            "Keyword Match": keyword_score,
+
             "Grade": self.grade(score),
 
-            "Recommendation":
+            "Confidence": self.confidence(score),
 
-                self.recommendation(score)
+            "Hiring Status": self.hiring_status(score),
+
+            "Recommendation": self.recommendation(score)
 
         }

@@ -1,221 +1,286 @@
 """
-====================================================
-Resume Intelligence AI
-GenAI Resume Reviewer
-Version : 5.0
-====================================================
+=========================================================
+NEXUS AI
+Enterprise LLM Engine
+Author : Naveen Kumar
+Version : 9.0
+=========================================================
 """
+
+from datetime import datetime
+
 
 class LLMEngine:
 
     def __init__(self):
         pass
 
-    # ----------------------------------
+    # ==================================================
+    # Resume Review
+    # ==================================================
 
     def review_resume(
-
         self,
-
         ats,
-
         similarity,
-
         quality,
-
         experience,
-
         matched,
-
         missing
-
     ):
 
-        review=[]
+        review = []
 
-        if ats<70:
-
-            review.append(
-                "ATS compatibility is below industry standards."
-            )
-
+        if ats >= 90:
+            review.append("Excellent ATS compatibility.")
+        elif ats >= 70:
+            review.append("Good ATS compatibility.")
         else:
+            review.append("ATS compatibility requires improvement.")
 
-            review.append(
-                "Resume has good ATS compatibility."
-            )
-
-        if similarity<75:
-
-            review.append(
-                "Resume should be aligned more closely with the selected job role."
-            )
-
+        if similarity >= 80:
+            review.append("Resume is strongly aligned with the target job.")
         else:
+            review.append("Improve alignment with the job description.")
 
-            review.append(
-                "Resume matches the selected job role well."
-            )
-
-        if quality<70:
-
-            review.append(
-                "Resume formatting and content quality can be improved."
-            )
-
+        if quality >= 80:
+            review.append("Resume formatting and content are professional.")
         else:
+            review.append("Improve formatting, readability and content quality.")
 
-            review.append(
-                "Resume quality is professional."
-            )
-
-        if experience<2:
-
-            review.append(
-                "Highlight internships, projects and certifications."
-            )
-
-        elif experience<5:
-
-            review.append(
-                "Add measurable achievements from previous roles."
-            )
-
+        if experience < 2:
+            review.append("Highlight internships, projects and certifications.")
+        elif experience < 5:
+            review.append("Include measurable achievements.")
         else:
+            review.append("Highlight leadership and business impact.")
 
+        if missing:
             review.append(
-                "Leadership achievements should be highlighted."
-            )
-
-        if len(missing)>0:
-
-            review.append(
-
                 "Top missing skills: "
-
-                +", ".join(missing[:5])
-
+                + ", ".join(missing[:5])
             )
 
         return review
 
-    # ----------------------------------
+    # ==================================================
+    # Strengths
+    # ==================================================
 
-    def recruiter_feedback(
+    def strengths(self, matched):
 
-        self,
+        if not matched:
+            return ["No technical strengths identified."]
 
-        score
+        return [f"Strong knowledge of {skill}" for skill in matched[:10]]
 
-    ):
+    # ==================================================
+    # Weaknesses
+    # ==================================================
 
-        if score>=90:
+    def weaknesses(self, missing):
 
-            return "Strongly Recommended"
+        if not missing:
+            return ["No major weaknesses detected."]
 
-        elif score>=80:
+        return [f"Improve {skill}" for skill in missing[:10]]
 
+    # ==================================================
+    # Recruiter Decision
+    # ==================================================
+
+    def recruiter_feedback(self, score):
+
+        if score >= 95:
+            return "Outstanding Candidate"
+
+        elif score >= 85:
+            return "Highly Recommended"
+
+        elif score >= 75:
             return "Recommended"
 
-        elif score>=65:
+        elif score >= 60:
+            return "Consider After Review"
 
-            return "Can be Shortlisted"
+        return "Not Recommended"
 
-        elif score>=50:
+    # ==================================================
+    # Hiring Probability
+    # ==================================================
 
-            return "Needs Resume Improvement"
+    def hiring_probability(self, score):
+
+        return min(100, max(0, score))
+
+    # ==================================================
+    # Career Advice
+    # ==================================================
+
+    def career_advice(
+        self,
+        experience,
+        missing
+    ):
+
+        advice = []
+
+        if experience < 2:
+            advice.append(
+                "Focus on internships and real-world projects."
+            )
+
+        elif experience < 5:
+            advice.append(
+                "Build domain expertise and advanced certifications."
+            )
 
         else:
-
-            return "Not Suitable Currently"
-
-    # ----------------------------------
-
-    def improvement_plan(
-
-        self,
-
-        missing
-
-    ):
-
-        plan=[]
-
-        for skill in missing:
-
-            plan.append(
-
-                f"Learn {skill}"
-
+            advice.append(
+                "Develop leadership and mentoring skills."
             )
 
-        return plan
+        if missing:
+            advice.append(
+                "Prioritize learning: "
+                + ", ".join(missing[:5])
+            )
 
-    # ----------------------------------
+        advice.append(
+            "Maintain an updated LinkedIn and GitHub portfolio."
+        )
 
-    def generate_report(
+        return advice
 
+    # ==================================================
+    # Executive Summary
+    # ==================================================
+
+    def summarize(
         self,
-
         ats,
-
         similarity,
-
-        quality,
-
-        experience,
-
-        matched,
-
-        missing
-
+        quality
     ):
 
-        return{
+        return (
+            f"ATS Score: {ats}% | "
+            f"Similarity: {similarity}% | "
+            f"Resume Quality: {quality}%"
+        )
+
+    # ==================================================
+    # AI Chat
+    # ==================================================
+
+    def chat(
+        self,
+        message
+    ):
+
+        message = message.lower()
+
+        if "resume" in message:
+            return "I can help improve your resume."
+
+        if "ats" in message:
+            return "Use relevant keywords from the job description."
+
+        if "interview" in message:
+            return "Practice technical and behavioral questions."
+
+        if "career" in message:
+            return "Continue learning in-demand technologies and build strong projects."
+
+        return "Please ask a resume, interview, ATS or career-related question."
+
+    # ==================================================
+    # Cover Letter Prompt
+    # ==================================================
+
+    def cover_letter(
+        self,
+        role
+    ):
+
+        return (
+            f"Generate a professional cover letter for the position of {role}."
+        )
+
+    # ==================================================
+    # Interview Prompt
+    # ==================================================
+
+    def interview_questions(
+        self,
+        role
+    ):
+
+        return (
+            f"Generate interview questions for {role}."
+        )
+
+    # ==================================================
+    # Generic Generate
+    # ==================================================
+
+    def generate(
+        self,
+        ats,
+        similarity,
+        quality,
+        experience,
+        matched,
+        missing
+    ):
+
+        return {
+
+            "Executive Summary":
+                self.summarize(
+                    ats,
+                    similarity,
+                    quality
+                ),
 
             "AI Review":
+                self.review_resume(
+                    ats,
+                    similarity,
+                    quality,
+                    experience,
+                    matched,
+                    missing
+                ),
 
-            self.review_resume(
+            "Strengths":
+                self.strengths(
+                    matched
+                ),
 
-                ats,
+            "Weaknesses":
+                self.weaknesses(
+                    missing
+                ),
 
-                similarity,
-
-                quality,
-
-                experience,
-
-                matched,
-
-                missing
-
-            ),
+            "Career Advice":
+                self.career_advice(
+                    experience,
+                    missing
+                ),
 
             "Recruiter Decision":
+                self.recruiter_feedback(
+                    ats
+                ),
 
-            self.recruiter_feedback(
+            "Hiring Probability":
+                self.hiring_probability(
+                    ats
+                ),
 
-                ats
-
-            ),
-
-            "Learning Plan":
-
-            self.improvement_plan(
-
-                missing
-
-            )
-
+            "Generated On":
+                datetime.now().strftime(
+                    "%d-%m-%Y %H:%M"
+                )
         }
-generate()
-
-chat()
-
-summarize()
-
-career_advice()
-
-cover_letter()
-
-interview_questions()

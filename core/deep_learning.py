@@ -8,6 +8,7 @@ Author : Naveen Kumar
 """
 
 import os
+import joblib
 import numpy as np
 import pandas as pd
 
@@ -18,12 +19,12 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 
-import joblib
-
 
 class DeepLearningModel:
 
     def __init__(self):
+
+        os.makedirs("models", exist_ok=True)
 
         self.model_path = "models/deep_learning_model.keras"
 
@@ -45,35 +46,35 @@ class DeepLearningModel:
 
         df = pd.DataFrame({
 
-            "Experience":np.random.randint(0,15,rows),
+            "Experience": np.random.randint(0, 15, rows),
 
-            "Skills":np.random.randint(5,35,rows),
+            "Skills": np.random.randint(5, 35, rows),
 
-            "Projects":np.random.randint(0,15,rows),
+            "Projects": np.random.randint(0, 15, rows),
 
-            "Education":np.random.randint(1,5,rows),
+            "Education": np.random.randint(1, 5, rows),
 
-            "Certifications":np.random.randint(0,10,rows)
+            "Certifications": np.random.randint(0, 10, rows)
 
         })
 
-        df["HiringScore"]=(
+        df["HiringScore"] = (
 
-            df["Experience"]*5+
+            df["Experience"] * 5 +
 
-            df["Skills"]*2+
+            df["Skills"] * 2 +
 
-            df["Projects"]*2+
+            df["Projects"] * 2 +
 
-            df["Education"]*10+
+            df["Education"] * 10 +
 
-            df["Certifications"]*3+
+            df["Certifications"] * 3 +
 
-            np.random.randint(-10,10,rows)
+            np.random.randint(-10, 10, rows)
 
         )
 
-        df["HiringScore"]=df["HiringScore"].clip(0,100)
+        df["HiringScore"] = df["HiringScore"].clip(0, 100)
 
         return df
 
@@ -83,68 +84,39 @@ class DeepLearningModel:
 
     def build_model(self):
 
-        model=Sequential()
+        model = Sequential()
 
         model.add(
-
             Dense(
-
                 64,
-
                 activation="relu",
-
                 input_shape=(5,)
-
             )
-
         )
 
-        model.add(
-
-            Dropout(0.30)
-
-        )
+        model.add(Dropout(0.30))
 
         model.add(
-
             Dense(
-
                 32,
-
                 activation="relu"
-
             )
-
         )
 
-        model.add(
-
-            Dropout(0.20)
-
-        )
+        model.add(Dropout(0.20))
 
         model.add(
-
             Dense(
-
                 16,
-
                 activation="relu"
-
             )
-
         )
 
         model.add(
-
             Dense(
-
                 1,
-
                 activation="linear"
-
             )
-
         )
 
         model.compile(
@@ -165,13 +137,13 @@ class DeepLearningModel:
 
     def train(self):
 
-        df=self.load_dataset()
+        df = self.load_dataset()
 
-        X=df.drop("HiringScore",axis=1)
+        X = df.drop("HiringScore", axis=1)
 
-        y=df["HiringScore"]
+        y = df["HiringScore"]
 
-        X=self.scaler.fit_transform(X)
+        X = self.scaler.fit_transform(X)
 
         joblib.dump(
 
@@ -181,7 +153,7 @@ class DeepLearningModel:
 
         )
 
-        X_train,X_test,y_train,y_test=train_test_split(
+        X_train, X_test, y_train, y_test = train_test_split(
 
             X,
 
@@ -193,9 +165,9 @@ class DeepLearningModel:
 
         )
 
-        self.model=self.build_model()
+        self.model = self.build_model()
 
-        early=EarlyStopping(
+        early = EarlyStopping(
 
             monitor="val_loss",
 
@@ -205,7 +177,7 @@ class DeepLearningModel:
 
         )
 
-        history=self.model.fit(
+        history = self.model.fit(
 
             X_train,
 
@@ -219,7 +191,7 @@ class DeepLearningModel:
 
             callbacks=[early],
 
-            verbose=1
+            verbose=0
 
         )
 
@@ -230,6 +202,7 @@ class DeepLearningModel:
         )
 
         return history
+
     # -------------------------------------------------------
     # Load Model
     # -------------------------------------------------------
@@ -238,17 +211,34 @@ class DeepLearningModel:
 
         if os.path.exists(self.model_path):
 
-            self.model = load_model(self.model_path)
+            self.model = load_model(
+
+                self.model_path
+
+            )
 
         if os.path.exists(self.scaler_path):
 
-            self.scaler = joblib.load(self.scaler_path)
+            self.scaler = joblib.load(
 
+                self.scaler_path
+
+            )
     # -------------------------------------------------------
     # Evaluate Model
     # -------------------------------------------------------
 
     def evaluate(self):
+
+        if self.model is None:
+
+            self.load()
+
+        if self.model is None:
+
+            self.train()
+
+            self.load()
 
         df = self.load_dataset()
 
@@ -256,7 +246,7 @@ class DeepLearningModel:
 
         y = df["HiringScore"]
 
-        X = self.scaler.fit_transform(X)
+        X = self.scaler.transform(X)
 
         loss, mae = self.model.evaluate(
 
@@ -270,9 +260,9 @@ class DeepLearningModel:
 
         return {
 
-            "Loss": round(loss, 3),
+            "Loss": round(float(loss), 3),
 
-            "MAE": round(mae, 3)
+            "MAE": round(float(mae), 3)
 
         }
 
@@ -300,17 +290,23 @@ class DeepLearningModel:
 
             self.load()
 
+        if self.model is None:
+
+            self.train()
+
+            self.load()
+
         sample = pd.DataFrame({
 
-            "Experience":[experience],
+            "Experience": [experience],
 
-            "Skills":[skills],
+            "Skills": [skills],
 
-            "Projects":[projects],
+            "Projects": [projects],
 
-            "Education":[education],
+            "Education": [education],
 
-            "Certifications":[certifications]
+            "Certifications": [certifications]
 
         })
 
@@ -324,9 +320,9 @@ class DeepLearningModel:
 
         )[0][0]
 
-        prediction = max(0, min(100, prediction))
+        prediction = max(0, min(100, float(prediction)))
 
-        return round(float(prediction),2)
+        return round(prediction, 2)
 
     # -------------------------------------------------------
     # Confidence Score
@@ -334,15 +330,15 @@ class DeepLearningModel:
 
     def confidence(self, prediction):
 
-        if prediction >= 85:
+        if prediction >= 90:
 
             return "Very High"
 
-        elif prediction >= 70:
+        elif prediction >= 80:
 
             return "High"
 
-        elif prediction >= 50:
+        elif prediction >= 65:
 
             return "Medium"
 
@@ -351,59 +347,43 @@ class DeepLearningModel:
             return "Low"
 
     # -------------------------------------------------------
-    # AI Recommendation
+    # Recommendation
     # -------------------------------------------------------
 
     def recommendation(self, prediction):
 
-        if prediction >= 85:
+        if prediction >= 90:
 
-            return """
-Excellent Resume.
+            return (
+                "Excellent candidate.\n\n"
+                "Strong technical profile with high hiring probability."
+            )
 
-Very strong hiring probability.
+        elif prediction >= 80:
 
-Keep applying to premium companies.
-"""
+            return (
+                "Very good profile.\n\n"
+                "Improve certifications and advanced projects for premium roles."
+            )
 
-        elif prediction >= 70:
+        elif prediction >= 65:
 
-            return """
-Strong Resume.
-
-Improve certifications and projects
-for better opportunities.
-"""
-
-        elif prediction >= 50:
-
-            return """
-Average Resume.
-
-Add more technical skills.
-
-Complete industry certifications.
-
-Improve project portfolio.
-"""
+            return (
+                "Good profile.\n\n"
+                "Improve technical skills, ATS optimization and portfolio."
+            )
 
         else:
 
-            return """
-Resume needs significant improvement.
-
-Focus on:
-
-• Skills
-
-• Projects
-
-• Certifications
-
-• Resume Formatting
-
-• ATS Optimization
-"""
+            return (
+                "Resume requires significant improvement.\n\n"
+                "Focus on:\n"
+                "• Technical Skills\n"
+                "• Projects\n"
+                "• Certifications\n"
+                "• Resume Formatting\n"
+                "• ATS Optimization"
+            )
 
     # -------------------------------------------------------
     # Demo Prediction
@@ -411,13 +391,7 @@ Focus on:
 
     def demo_prediction(self):
 
-        if not os.path.exists(self.model_path):
-
-            self.train()
-
-        self.load()
-
-        prediction = self.predict(
+        return self.predict(
 
             experience=5,
 
@@ -430,8 +404,6 @@ Focus on:
             certifications=2
 
         )
-
-        return prediction
 
     # -------------------------------------------------------
     # Complete Report
@@ -473,8 +445,54 @@ Focus on:
 
             "Confidence": self.confidence(score),
 
-            "Recommendation": self.recommendation(score)
+            "Recommendation": self.recommendation(score),
+
+            "Grade": self.grade(score),
+
+            "Hiring Status": self.hiring_status(score)
 
         }
 
         return report
+
+    # -------------------------------------------------------
+    # Grade
+    # -------------------------------------------------------
+
+    def grade(self, score):
+
+        if score >= 95:
+            return "A+"
+
+        elif score >= 85:
+            return "A"
+
+        elif score >= 75:
+            return "B+"
+
+        elif score >= 65:
+            return "B"
+
+        else:
+            return "C"
+
+    # -------------------------------------------------------
+    # Hiring Status
+    # -------------------------------------------------------
+
+    def hiring_status(self, score):
+
+        if score >= 95:
+            return "🟢 Outstanding Candidate"
+
+        elif score >= 85:
+            return "🟢 Highly Recommended"
+
+        elif score >= 75:
+            return "🟡 Recommended"
+
+        elif score >= 60:
+            return "🟠 Consider After Review"
+
+        else:
+            return "🔴 Not Recommended"

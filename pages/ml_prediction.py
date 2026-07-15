@@ -1,83 +1,155 @@
+"""
+=========================================================
+NEXUS AI
+Machine Learning Prediction Page
+Author : Naveen Kumar
+Version : 9.0
+=========================================================
+"""
+
 import streamlit as st
+
 from core.ml_prediction import MLPredictor
 
 
 def ml_prediction_page():
-    """
-    Machine Learning Prediction Page
-    """
 
-    st.header("🤖 Machine Learning Prediction")
+    st.title("🤖 Machine Learning Hiring Prediction")
 
-    ml = MLPredictor()
+    st.markdown(
+        "Predict candidate hiring score using multiple Machine Learning algorithms."
+    )
 
-    comparison = ml.train_models()
+    predictor = MLPredictor()
 
-    st.subheader("📊 Model Comparison")
+    # -------------------------------------------------
+    # Train Models
+    # -------------------------------------------------
+
+    with st.spinner("Training Machine Learning Models..."):
+
+        comparison = predictor.train_models()
+
+    st.subheader("📊 Model Performance Comparison")
 
     st.dataframe(
         comparison,
-        use_container_width=True
+        use_container_width=True,
+        hide_index=True
     )
 
     st.divider()
 
-    st.subheader("🎯 Predict Hiring Score")
+    # -------------------------------------------------
+    # Candidate Details
+    # -------------------------------------------------
 
-    experience = st.slider(
-        "Experience (Years)",
-        0,
-        20,
-        3
-    )
+    st.subheader("Candidate Profile")
 
-    skills = st.slider(
-        "Number of Skills",
-        0,
-        40,
-        15
-    )
+    col1, col2 = st.columns(2)
 
-    education = st.slider(
-        "Education Level",
-        1,
-        5,
-        3
-    )
+    with col1:
 
-    projects = st.slider(
-        "Projects",
-        0,
-        20,
-        5
-    )
-
-    certifications = st.slider(
-        "Certifications",
-        0,
-        15,
-        2
-    )
-
-    model = st.selectbox(
-        "Select Model",
-        comparison["Model"]
-    )
-
-    if st.button("🚀 Predict Hiring Score"):
-
-        score = ml.predict(
-            experience,
-            skills,
-            education,
-            projects,
-            certifications,
-            model
+        experience = st.slider(
+            "Experience (Years)",
+            0,
+            20,
+            3
         )
+
+        skills = st.slider(
+            "Technical Skills",
+            1,
+            40,
+            15
+        )
+
+        education = st.selectbox(
+            "Education Level",
+            [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        )
+
+    with col2:
+
+        projects = st.slider(
+            "Projects",
+            0,
+            20,
+            5
+        )
+
+        certifications = st.slider(
+            "Certifications",
+            0,
+            15,
+            2
+        )
+
+        model = st.selectbox(
+            "Prediction Model",
+            comparison["Model"].tolist()
+        )
+
+    st.divider()
+
+    # -------------------------------------------------
+    # Prediction
+    # -------------------------------------------------
+
+    if st.button(
+        "🚀 Predict Hiring Score",
+        use_container_width=True
+    ):
+
+        report = predictor.full_report(
+
+            experience=experience,
+
+            skills=skills,
+
+            education=education,
+
+            projects=projects,
+
+            certifications=certifications,
+
+            model_name=model
+
+        )
+
+        score = report["Hiring Score"]
 
         st.success("Prediction Completed Successfully!")
 
         st.metric(
-            "Predicted Hiring Score",
-            f"{score:.2f}%"
+            "Hiring Score",
+            f"{score}%"
         )
+
+        st.progress(score / 100)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.subheader("Candidate Grade")
+
+            st.success(report["Grade"])
+
+        with col2:
+
+            st.subheader("Recommendation")
+
+            st.info(report["Recommendation"])
+
+        st.divider()
+
+        st.subheader("Prediction Summary")
+
+        st.json(report)

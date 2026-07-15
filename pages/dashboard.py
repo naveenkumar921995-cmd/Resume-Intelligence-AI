@@ -137,3 +137,4 @@ AI Recommendation
       │
       ▼
 Executive Report
+""")

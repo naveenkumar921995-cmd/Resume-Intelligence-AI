@@ -1,4 +1,13 @@
-calculate_hiring_score(
+"""
+=========================================================
+NEXUS AI
+Hiring Score Engine
+Author : Naveen Kumar
+=========================================================
+"""
+
+
+def calculate_hiring_score(
     ats_score,
     ml_prediction,
     dl_prediction,
@@ -6,47 +15,51 @@ calculate_hiring_score(
     technical_score,
     soft_skill_score,
     experience_score
-)
-95–100 → Outstanding Candidate 🟢
+):
+    """
+    Calculate final hiring score.
+    """
 
-85–94 → Highly Recommended 🟢
+    scores = [
+        ats_score,
+        ml_prediction,
+        dl_prediction,
+        similarity_score,
+        technical_score,
+        soft_skill_score,
+        experience_score,
+    ]
 
-75–84 → Recommended 🟡
+    final_score = round(sum(scores) / len(scores), 2)
 
-60–74 → Consider After Review 🟠
+    if final_score >= 95:
+        recommendation = "Outstanding Candidate 🟢"
+        grade = "A+"
+        risk = "Low"
 
-Below 60 → Not Recommended 🔴
-A+
+    elif final_score >= 85:
+        recommendation = "Highly Recommended 🟢"
+        grade = "A"
+        risk = "Low"
 
-A
+    elif final_score >= 75:
+        recommendation = "Recommended 🟡"
+        grade = "B+"
+        risk = "Medium"
 
-B+
+    elif final_score >= 60:
+        recommendation = "Consider After Review 🟠"
+        grade = "B"
+        risk = "Medium"
 
-B
+    else:
+        recommendation = "Not Recommended 🔴"
+        grade = "C"
+        risk = "High"
 
-C
-Skill Gap Risk
-
-Low
-
-Medium
-
-High
-Strengths
-
-⭐⭐⭐⭐⭐ Python
-
-⭐⭐⭐⭐ SQL
-
-⭐⭐⭐⭐ Machine Learning
-
-⭐⭐ Communication
-Needs Improvement
-
-Docker
-
-AWS
-
-CI/CD
-
-System Design
+    return {
+        "Hiring Score": final_score,
+        "Grade": grade,
+        "Recommendation": recommendation,
+        "Skill Gap Risk": risk,
+    }

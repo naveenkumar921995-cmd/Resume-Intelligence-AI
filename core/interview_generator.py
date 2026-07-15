@@ -1,10 +1,10 @@
 """
-==========================================================
-Resume Intelligence AI
-AI Interview Question Generator
+=========================================================
+NEXUS AI
+Enterprise AI Interview Generator
 Author : Naveen Kumar
-Version : 6.0
-==========================================================
+Version : 9.0
+=========================================================
 """
 
 import random
@@ -15,7 +15,9 @@ class InterviewGenerator:
     def __init__(self):
         pass
 
-    # ------------------------------------
+    # --------------------------------------------------
+    # Technical Questions
+    # --------------------------------------------------
 
     def technical_questions(
         self,
@@ -25,69 +27,94 @@ class InterviewGenerator:
 
         questions = []
 
-        for skill in matched_skills:
+        for skill in sorted(set(matched_skills)):
 
             questions.append(
-
-                f"Explain your practical experience with {skill}."
-
+                f"Explain the fundamentals of {skill}."
             )
 
             questions.append(
-
-                f"What challenges did you face while using {skill}?"
-
+                f"Describe a real project where you used {skill}."
             )
 
             if experience >= 3:
 
                 questions.append(
+                    f"What are the best practices while working with {skill}?"
+                )
 
-                    f"Describe a real project where {skill} improved business outcomes."
+            if experience >= 5:
 
+                questions.append(
+                    f"How would you architect an enterprise solution using {skill}?"
                 )
 
         return questions
 
-    # ------------------------------------
+    # --------------------------------------------------
+    # Missing Skills
+    # --------------------------------------------------
 
-    def missing_skill_questions(self, missing):
+    def missing_skill_questions(
+        self,
+        missing_skills
+    ):
 
-        questions = []
+        return [
 
-        for skill in missing:
+            f"If assigned a project requiring {skill}, how would you learn and implement it?"
 
-            questions.append(
+            for skill in sorted(set(missing_skills))
 
-                f"If assigned a project requiring {skill}, how would you learn and implement it?"
+        ]
 
-            )
+    # --------------------------------------------------
+    # Coding Questions
+    # --------------------------------------------------
 
-        return questions
+    def coding_questions(self):
 
-    # ------------------------------------
+        return [
+
+            "Write a Python function to remove duplicate values from a list.",
+
+            "Explain the difference between List, Tuple and Set.",
+
+            "What is time complexity?",
+
+            "Explain OOP concepts with examples.",
+
+            "Difference between multithreading and multiprocessing.",
+
+            "Explain REST API architecture."
+
+        ]
+
+    # --------------------------------------------------
+    # Behavioural
+    # --------------------------------------------------
 
     def behavioral_questions(self):
 
         return [
 
-            "Describe a difficult problem you solved.",
+            "Tell us about a difficult project you handled.",
 
-            "Tell us about a project you are proud of.",
+            "Describe a conflict in your team and how you resolved it.",
 
             "How do you prioritize multiple deadlines?",
 
-            "Describe a leadership situation.",
+            "Describe your leadership style.",
 
-            "How do you handle criticism?",
-
-            "Explain a failure and what you learned.",
+            "Tell us about a major failure and what you learned.",
 
             "How do you work under pressure?"
 
         ]
 
-    # ------------------------------------
+    # --------------------------------------------------
+    # HR
+    # --------------------------------------------------
 
     def hr_questions(self):
 
@@ -97,66 +124,103 @@ class InterviewGenerator:
 
             "Why should we hire you?",
 
+            "Why are you leaving your current organization?",
+
             "Where do you see yourself in five years?",
 
-            "Why are you leaving your current job?",
+            "What are your strengths?",
 
-            "Describe your biggest strength.",
-
-            "Describe one weakness you're improving."
+            "What is one weakness you are currently improving?"
 
         ]
 
-    # ------------------------------------
+    # --------------------------------------------------
+    # Communication
+    # --------------------------------------------------
+
+    def communication_questions(self):
+
+        return [
+
+            "Explain a technical concept to a non-technical person.",
+
+            "How would you present project progress to senior management?",
+
+            "Describe a situation where communication prevented a project issue."
+
+        ]
+
+    # --------------------------------------------------
+    # Interview Scorecard
+    # --------------------------------------------------
+
+    def scorecard(self):
+
+        return {
+
+            "Technical Skills": 30,
+
+            "Problem Solving": 20,
+
+            "Communication": 15,
+
+            "Projects": 15,
+
+            "Behaviour": 10,
+
+            "Leadership": 10
+
+        }
+
+    # --------------------------------------------------
+    # Generate Complete Interview Kit
+    # --------------------------------------------------
 
     def generate(
-
         self,
-
         matched_skills,
-
         missing_skills,
-
         experience
-
     ):
 
-        questions = []
+        technical = self.technical_questions(
+            matched_skills,
+            experience
+        )
 
-        questions.extend(
+        missing = self.missing_skill_questions(
+            missing_skills
+        )
 
-            self.technical_questions(
+        coding = self.coding_questions()
 
-                matched_skills,
+        behavioral = self.behavioral_questions()
 
-                experience
+        hr = self.hr_questions()
 
-            )
+        communication = self.communication_questions()
+
+        questions = (
+
+            technical
+            + missing
+            + coding
+            + behavioral
+            + hr
+            + communication
 
         )
 
-        questions.extend(
-
-            self.missing_skill_questions(
-
-                missing_skills
-
-            )
-
-        )
-
-        questions.extend(
-
-            self.behavioral_questions()
-
-        )
-
-        questions.extend(
-
-            self.hr_questions()
-
-        )
+        questions = list(dict.fromkeys(questions))
 
         random.shuffle(questions)
 
-        return questions[:20]
+        return {
+
+            "Questions": questions[:25],
+
+            "Scorecard": self.scorecard(),
+
+            "Total Questions": min(25, len(questions))
+
+        }

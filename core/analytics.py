@@ -1,15 +1,14 @@
 """
 =========================================================
-Resume Intelligence AI
-EDA & Analytics Engine
+NEXUS AI
+Enterprise Resume Analytics Engine
 Author : Naveen Kumar
-Version : 5.0
+Version : 9.0
 =========================================================
 """
 
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 class ResumeAnalytics:
@@ -17,39 +16,61 @@ class ResumeAnalytics:
     def __init__(self):
         pass
 
-    # -----------------------------------------
-    # Resume Statistics
-    # -----------------------------------------
+    # --------------------------------------------------
+    # Resume Summary
+    # --------------------------------------------------
 
     def summary(self, features):
 
         return pd.DataFrame({
 
-            "Metric":[
+            "Metric": [
+
                 "Experience",
+
                 "Projects",
+
                 "Certifications",
+
                 "Resume Words",
+
                 "Resume Score"
+
             ],
 
-            "Value":[
-                features["Experience"],
-                features["Projects"],
-                features["Certifications"],
-                features["Resume Words"],
-                features["Resume Quality Score"]
+            "Value": [
+
+                features.get("Experience", 0),
+
+                features.get("Projects", 0),
+
+                features.get("Certifications", 0),
+
+                features.get("Resume Words", 0),
+
+                features.get("Resume Quality Score", 0)
+
             ]
 
         })
 
-    # -----------------------------------------
+    # --------------------------------------------------
+    # Skill Distribution
+    # --------------------------------------------------
 
-    def skill_distribution(self, matched, missing):
+    def skill_distribution(
+
+        self,
+
+        matched,
+
+        missing
+
+    ):
 
         return pd.DataFrame({
 
-            "Category":[
+            "Category": [
 
                 "Matched Skills",
 
@@ -57,7 +78,7 @@ class ResumeAnalytics:
 
             ],
 
-            "Count":[
+            "Count": [
 
                 len(matched),
 
@@ -67,35 +88,93 @@ class ResumeAnalytics:
 
         })
 
-    # -----------------------------------------
+    # --------------------------------------------------
+    # Pie Chart
+    # --------------------------------------------------
 
-    def pie_chart(self, matched, missing):
+    def pie_chart(
 
-        fig, ax = plt.subplots(figsize=(5,5))
+        self,
 
-        ax.pie(
+        matched,
 
-            [
+        missing
 
-                len(matched),
+    ):
 
-                len(missing)
+        df = self.skill_distribution(
 
-            ],
+            matched,
 
-            labels=["Matched","Missing"],
-
-            autopct="%1.1f%%"
+            missing
 
         )
 
-        ax.set_title("Skill Distribution")
+        fig = px.pie(
+
+            df,
+
+            names="Category",
+
+            values="Count",
+
+            hole=0.45,
+
+            title="Skill Distribution"
+
+        )
 
         return fig
 
-    # -----------------------------------------
+    # --------------------------------------------------
+    # Bar Chart
+    # --------------------------------------------------
 
-    def experience_level(self, years):
+    def bar_chart(
+
+        self,
+
+        matched,
+
+        missing
+
+    ):
+
+        df = self.skill_distribution(
+
+            matched,
+
+            missing
+
+        )
+
+        fig = px.bar(
+
+            df,
+
+            x="Category",
+
+            y="Count",
+
+            text="Count",
+
+            title="Matched vs Missing Skills"
+
+        )
+
+        return fig
+
+    # --------------------------------------------------
+    # Experience Level
+    # --------------------------------------------------
+
+    def experience_level(
+
+        self,
+
+        years
+
+    ):
 
         if years <= 1:
 
@@ -113,11 +192,21 @@ class ResumeAnalytics:
 
             return "Senior"
 
-        return "Leadership"
+        else:
 
-    # -----------------------------------------
+            return "Leadership"
 
-    def resume_strength(self, score):
+    # --------------------------------------------------
+    # Resume Strength
+    # --------------------------------------------------
+
+    def resume_strength(
+
+        self,
+
+        score
+
+    ):
 
         if score >= 90:
 
@@ -135,21 +224,131 @@ class ResumeAnalytics:
 
             return "Weak"
 
-        return "Very Weak"
+        else:
 
-    # -----------------------------------------
+            return "Very Weak"
+
+    # --------------------------------------------------
+    # Candidate Grade
+    # --------------------------------------------------
+
+    def grade(
+
+        self,
+
+        score
+
+    ):
+
+        if score >= 95:
+
+            return "A+"
+
+        elif score >= 85:
+
+            return "A"
+
+        elif score >= 75:
+
+            return "B+"
+
+        elif score >= 65:
+
+            return "B"
+
+        else:
+
+            return "C"
+
+    # --------------------------------------------------
+    # Skill Gap Risk
+    # --------------------------------------------------
+
+    def skill_gap_risk(
+
+        self,
+
+        matched,
+
+        missing
+
+    ):
+
+        total = len(matched) + len(missing)
+
+        if total == 0:
+
+            return "Unknown"
+
+        gap = len(missing) / total
+
+        if gap < 0.20:
+
+            return "Low"
+
+        elif gap < 0.50:
+
+            return "Medium"
+
+        else:
+
+            return "High"
+
+    # --------------------------------------------------
+    # Hiring Recommendation
+    # --------------------------------------------------
+
+    def hiring_status(
+
+        self,
+
+        score
+
+    ):
+
+        if score >= 95:
+
+            return "🟢 Outstanding Candidate"
+
+        elif score >= 85:
+
+            return "🟢 Highly Recommended"
+
+        elif score >= 75:
+
+            return "🟡 Recommended"
+
+        elif score >= 60:
+
+            return "🟠 Consider After Review"
+
+        else:
+
+            return "🔴 Not Recommended"
+
+    # --------------------------------------------------
+    # Dashboard Metrics
+    # --------------------------------------------------
 
     def dashboard_metrics(
 
-            self,
+        self,
 
-            ats,
+        ats,
 
-            similarity,
+        similarity,
 
-            quality
+        quality
 
     ):
+
+        overall = round(
+
+            (ats + similarity + quality) / 3,
+
+            2
+
+        )
 
         return {
 
@@ -157,6 +356,12 @@ class ResumeAnalytics:
 
             "Similarity": similarity,
 
-            "Resume Quality": quality
+            "Resume Quality": quality,
+
+            "Overall Score": overall,
+
+            "Grade": self.grade(overall),
+
+            "Recommendation": self.hiring_status(overall)
 
         }
