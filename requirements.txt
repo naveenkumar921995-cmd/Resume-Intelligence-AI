@@ -1,25 +1,51 @@
+# ==========================
+# Streamlit
+# ==========================
 streamlit
+
+# ==========================
+# Data Science
+# ==========================
 pandas
 numpy
 scikit-learn
-xgboost
-tensorflow
 joblib
+scipy
 
+# ==========================
+# Machine Learning
+# ==========================
+xgboost
+
+# ==========================
+# NLP
+# ==========================
+nltk
+spacy
+sentence-transformers
+
+# ==========================
+# OpenAI
+# ==========================
+openai
+
+# ==========================
+# Visualization
+# ==========================
 plotly
 matplotlib
 
+# ==========================
+# File Processing
+# ==========================
 pdfplumber
 python-docx
 reportlab
 openpyxl
-
-nltk
-spacy
-sentence-transformers
-openai
-
 Pillow
+
+# ==========================
+# Optional Visualization
+# ==========================
 wordcloud
 networkx
-scipy
