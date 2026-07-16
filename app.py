@@ -22,26 +22,26 @@ from config import (
 from ui.sidebar import render_sidebar
 
 # ==========================================================
-# Page Imports
+# App_Page Imports
 # ==========================================================
 
-from pages.dashboard import dashboard_page
-from pages.resume_analyzer import resume_analyzer_page
-from pages.ats_analysis import ats_analysis_page
-from pages.nlp_analysis import nlp_analysis_page
-from pages.analytics import analytics_page
-from pages.ml_prediction import ml_prediction_page
-from pages.recruiter_dashboard import recruiter_dashboard_page
-from pages.salary_prediction import salary_prediction_page
-from pages.learning_roadmap import learning_roadmap_page
-from pages.ai_career_coach import ai_career_coach_page
-from pages.interview_generator import interview_generator_page
-from pages.cover_letter import cover_letter_page
-from pages.email_generator import email_generator_page
-from pages.executive_report import executive_report_page
-from pages.settings import settings_page
+from app_pages.dashboard import dashboard_page
+from app_pages.resume_analyzer import resume_analyzer_page
+from app_pages.ats_analysis import ats_analysis_page
+from app_pages.nlp_analysis import nlp_analysis_page
+from app_pages.analytics import analytics_page
+from app_pages.ml_prediction import ml_prediction_page
+from app_pages.recruiter_dashboard import recruiter_dashboard_page
+from app_pages.salary_prediction import salary_prediction_page
+from app_pages.learning_roadmap import learning_roadmap_page
+from app_pages.ai_career_coach import ai_career_coach_page
+from app_pages.interview_generator import interview_generator_page
+from app_pages.cover_letter import cover_letter_page
+from app_pages.email_generator import email_generator_page
+from app_pages.executive_report import executive_report_page
+from app_pages.settings import settings_page
 try:
-    from pages.deep_learning import deep_learning_page
+    from app_pages.deep_learning import deep_learning_page
 except Exception:
     def deep_learning_page():
         import streamlit as st

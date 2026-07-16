@@ -191,11 +191,31 @@ def analytics_page():
         )
 
         fig = analytics.pie_chart(
+        matched,
+        missing
+        )
 
-            matched,
+        st.plotly_chart(
+        fig,
+        use_container_width=True
+        )
+        bar = analytics.bar_chart(
+        matched,
+        missing
+        )
 
-            missing
+        st.plotly_chart(
+        fig,
+        use_container_width=True
+        )
+        bar = analytics.bar_chart(
+        matched,
+        missing
+        )
 
+        st.plotly_chart(
+        bar,
+        use_container_width=True
         )
 
         st.pyplot(fig)
