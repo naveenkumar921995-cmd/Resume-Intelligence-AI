@@ -1,5 +1,5 @@
 import streamlit as st
-from core.llm_engine import AIResumeCoach
+from core.llm_engine import LLMEngine
 
 
 def ai_career_coach_page():
@@ -9,23 +9,46 @@ def ai_career_coach_page():
 
     st.header("💬 AI Career Coach")
 
-    resume = st.text_area(
-        "Paste Your Resume",
-        height=250,
-        placeholder="Paste your resume text here..."
+    ats = st.slider("ATS Score", 0, 100, 75)
+    similarity = st.slider("Job Similarity", 0, 100, 70)
+    quality = st.slider("Resume Quality", 0, 100, 80)
+    experience = st.slider("Experience (Years)", 0, 20, 3)
+
+    matched = st.text_input(
+        "Matched Skills",
+        "Python, SQL, Machine Learning"
     )
 
-    if st.button("🚀 Review Resume"):
+    missing = st.text_input(
+        "Missing Skills",
+        "AWS, Docker"
+    )
 
-        if not resume.strip():
-            st.warning("Please paste your resume first.")
-            return
+    if st.button("🚀 Generate AI Review"):
 
-        coach = AIResumeCoach()
+        coach = LLMEngine()
 
-        with st.spinner("Analyzing Resume..."):
-            review = coach.review(resume)
+        report = coach.generate_report(
+            ats=ats,
+            similarity=similarity,
+            quality=quality,
+            experience=experience,
+            matched=[x.strip() for x in matched.split(",") if x.strip()],
+            missing=[x.strip() for x in missing.split(",") if x.strip()],
+        )
 
-        st.success("Analysis Completed!")
+        st.success("AI Review Generated")
 
-        st.write(review)
+        st.subheader("📋 AI Review")
+
+        for item in report["AI Review"]:
+            st.write("✅", item)
+
+        st.subheader("🎯 Recruiter Decision")
+
+        st.info(report["Recruiter Decision"])
+
+        st.subheader("📚 Learning Plan")
+
+        for skill in report["Learning Plan"]:
+            st.write("•", skill)
