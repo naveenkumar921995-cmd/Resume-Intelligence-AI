@@ -1,14 +1,14 @@
 """
 =========================================================
 NEXUS AI
-Resume Analytics Dashboard
+Enterprise Resume Analytics Dashboard
 Author : Naveen Kumar
-Version : 9.0
+Version : 9.1 Enterprise
 =========================================================
 """
 
 import streamlit as st
-from core.analytics import ResumeAnalytics
+from core.ai_engine import AIEngine
 
 
 def analytics_page():
@@ -16,10 +16,10 @@ def analytics_page():
     st.title("📈 Resume Analytics Dashboard")
 
     st.markdown(
-        "Analyze resume quality, experience level, skill distribution, and key metrics."
+        "Enterprise Resume Analytics powered by the AI Engine."
     )
 
-    analytics = ResumeAnalytics()
+    engine = AIEngine()
 
     st.divider()
 
@@ -38,7 +38,7 @@ def analytics_page():
             0,
             20,
             3,
-            key="experience_slider"
+            key="analytics_experience"
         )
 
         projects = st.number_input(
@@ -46,7 +46,7 @@ def analytics_page():
             0,
             50,
             5,
-            key="projects_input"
+            key="analytics_projects"
         )
 
         certifications = st.number_input(
@@ -54,7 +54,7 @@ def analytics_page():
             0,
             20,
             2,
-            key="certifications_input"
+            key="analytics_certifications"
         )
 
     with col2:
@@ -64,7 +64,7 @@ def analytics_page():
             100,
             5000,
             600,
-            key="resume_words_input"
+            key="analytics_words"
         )
 
         resume_score = st.slider(
@@ -72,19 +72,21 @@ def analytics_page():
             0,
             100,
             80,
-            key="resume_score_slider"
+            key="analytics_score"
         )
 
     st.divider()
 
     # =====================================================
-    # Skills
+    # Skill Analysis
     # =====================================================
 
     st.subheader("Skill Analysis")
 
     matched = st.multiselect(
+
         "Matched Skills",
+
         [
             "Python",
             "SQL",
@@ -97,16 +99,21 @@ def analytics_page():
             "AWS",
             "Docker",
         ],
+
         default=[
             "Python",
             "SQL",
             "Machine Learning",
         ],
-        key="matched_skills"
+
+        key="analytics_matched"
+
     )
 
     missing = st.multiselect(
+
         "Missing Skills",
+
         [
             "AWS",
             "Docker",
@@ -116,11 +123,14 @@ def analytics_page():
             "Power BI",
             "Azure",
         ],
+
         default=[
             "AWS",
             "Docker",
         ],
-        key="missing_skills"
+
+        key="analytics_missing"
+
     )
 
     st.divider()
@@ -129,17 +139,28 @@ def analytics_page():
     # Generate Analytics
     # =====================================================
 
-    if st.button("🚀 Generate Analytics", key="generate_analytics"):
+    if st.button(
+        "🚀 Generate Analytics",
+        use_container_width=True
+    ):
+
+        analytics = engine.analytics
 
         features = {
+
             "Experience": experience,
+
             "Projects": projects,
+
             "Certifications": certifications,
+
             "Resume Words": resume_words,
-            "Resume Quality Score": resume_score,
+
+            "Resume Quality Score": resume_score
+
         }
 
-        # -------------------------------------------------
+        # ------------------------------------------------
 
         st.subheader("📋 Resume Summary")
 
@@ -148,52 +169,48 @@ def analytics_page():
         st.dataframe(
             summary,
             use_container_width=True,
-            hide_index=True,
+            hide_index=True
         )
 
-        # -------------------------------------------------
+        # ------------------------------------------------
 
         st.subheader("🛠 Skill Distribution")
 
         skill_df = analytics.skill_distribution(
             matched,
-            missing,
+            missing
         )
 
         st.dataframe(
             skill_df,
             use_container_width=True,
-            hide_index=True,
+            hide_index=True
         )
 
-        # -------------------------------------------------
-        # Pie Chart
-        # -------------------------------------------------
+        # ------------------------------------------------
 
-        pie_fig = analytics.pie_chart(
+        pie = analytics.pie_chart(
             matched,
-            missing,
+            missing
         )
 
         st.plotly_chart(
-            pie_fig,
+            pie,
             use_container_width=True,
-            key="pie_chart"
+            key="analytics_pie"
         )
 
-        # -------------------------------------------------
-        # Bar Chart
-        # -------------------------------------------------
+        # ------------------------------------------------
 
-        bar_fig = analytics.bar_chart(
+        bar = analytics.bar_chart(
             matched,
-            missing,
+            missing
         )
 
         st.plotly_chart(
-            bar_fig,
+            bar,
             use_container_width=True,
-            key="bar_chart"
+            key="analytics_bar"
         )
 
         st.divider()
@@ -202,27 +219,24 @@ def analytics_page():
         # Analytics Metrics
         # =====================================================
 
-        st.subheader("📊 Analytics")
+        st.subheader("📊 Analytics Metrics")
 
-        col1, col2, col3 = st.columns(3)
+        c1, c2, c3 = st.columns(3)
 
-        with col1:
-            st.metric(
-                "Experience Level",
-                analytics.experience_level(experience),
-            )
+        c1.metric(
+            "Experience Level",
+            analytics.experience_level(experience)
+        )
 
-        with col2:
-            st.metric(
-                "Resume Strength",
-                analytics.resume_strength(resume_score),
-            )
+        c2.metric(
+            "Resume Strength",
+            analytics.resume_strength(resume_score)
+        )
 
-        with col3:
-            st.metric(
-                "Matched Skills",
-                len(matched),
-            )
+        c3.metric(
+            "Matched Skills",
+            len(matched)
+        )
 
         st.divider()
 
@@ -231,11 +245,34 @@ def analytics_page():
         # =====================================================
 
         metrics = analytics.dashboard_metrics(
+
             ats=resume_score,
+
             similarity=85,
-            quality=resume_score,
+
+            quality=resume_score
+
         )
 
         st.subheader("📈 Dashboard Metrics")
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "Overall Score",
+            metrics["Overall Score"]
+        )
+
+        col2.metric(
+            "Grade",
+            metrics["Grade"]
+        )
+
+        col3.metric(
+            "Recommendation",
+            metrics["Recommendation"]
+        )
+
+        st.divider()
 
         st.json(metrics)

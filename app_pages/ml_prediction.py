@@ -3,13 +3,12 @@
 NEXUS AI
 Machine Learning Prediction Page
 Author : Naveen Kumar
-Version : 9.0
+Version : 9.1 Enterprise
 =========================================================
 """
 
 import streamlit as st
-
-from core.ml_prediction import MLPredictor
+from core.ai_engine import AIEngine
 
 
 def ml_prediction_page():
@@ -17,10 +16,10 @@ def ml_prediction_page():
     st.title("🤖 Machine Learning Hiring Prediction")
 
     st.markdown(
-        "Predict candidate hiring score using multiple Machine Learning algorithms."
+        "Predict candidate hiring score using the Enterprise AI Engine."
     )
 
-    predictor = MLPredictor()
+    engine = AIEngine()
 
     # -------------------------------------------------
     # Train Models
@@ -28,7 +27,7 @@ def ml_prediction_page():
 
     with st.spinner("Training Machine Learning Models..."):
 
-        comparison = predictor.train_models()
+        comparison = engine.ml.train_models()
 
     st.subheader("📊 Model Performance Comparison")
 
@@ -41,7 +40,7 @@ def ml_prediction_page():
     st.divider()
 
     # -------------------------------------------------
-    # Candidate Details
+    # Candidate Profile
     # -------------------------------------------------
 
     st.subheader("Candidate Profile")
@@ -66,13 +65,7 @@ def ml_prediction_page():
 
         education = st.selectbox(
             "Education Level",
-            [
-                1,
-                2,
-                3,
-                4,
-                5
-            ]
+            [1, 2, 3, 4, 5]
         )
 
     with col2:
@@ -107,7 +100,7 @@ def ml_prediction_page():
         use_container_width=True
     ):
 
-        report = predictor.full_report(
+        report = engine.ml.full_report(
 
             experience=experience,
 
@@ -139,13 +132,11 @@ def ml_prediction_page():
         with col1:
 
             st.subheader("Candidate Grade")
-
             st.success(report["Grade"])
 
         with col2:
 
             st.subheader("Recommendation")
-
             st.info(report["Recommendation"])
 
         st.divider()
