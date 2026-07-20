@@ -9,6 +9,7 @@ Version : 9.1 Enterprise
 
 import streamlit as st
 from core.ai_engine import AIEngine
+from core.hiring_score import HiringScoreEngine
 
 
 def recruiter_dashboard_page():
@@ -20,6 +21,7 @@ def recruiter_dashboard_page():
     )
 
     engine = AIEngine()
+    hiring = HiringScoreEngine()
 
     st.divider()
 
@@ -136,6 +138,33 @@ def recruiter_dashboard_page():
 
         )
 
+# Demo values for now.
+# Later these will come from ML/DL modules.
+
+        ml_score = quality
+        dl_score = quality
+        technical_score = quality
+        soft_skill_score = 80
+        experience_score = min(experience * 10, 100)
+
+        hiring_report = hiring.report(
+
+            ats=ats,
+
+            similarity=similarity,
+
+            ml=ml_score,
+
+            dl=dl_score,
+
+            technical=technical_score,
+
+            soft_skills=soft_skill_score,
+
+            experience=experience_score
+
+        )
+
         report = coach.generate_report(
 
             ats=ats,
@@ -159,27 +188,41 @@ def recruiter_dashboard_page():
         c1, c2, c3, c4 = st.columns(4)
 
         c1.metric(
+
             "ATS",
-            metrics["ATS Score"]
+
+            f"{ats}%"
+
         )
 
         c2.metric(
+
             "Similarity",
-            metrics["Similarity"]
+
+            f"{similarity}%"
+
         )
 
         c3.metric(
-            "Overall",
-            metrics["Overall Score"]
+
+            "Hiring Score",
+
+            f'{hiring_report["Hiring Score"]}%'
+
         )
 
         c4.metric(
+
             "Grade",
-            metrics["Grade"]
+
+            hiring_report["Grade"]
+
         )
 
         st.progress(
-            metrics["Overall Score"] / 100
+
+            hiring_report["Hiring Score"] / 100
+
         )
 
         st.divider()
@@ -189,11 +232,29 @@ def recruiter_dashboard_page():
         st.subheader("🎯 Recruiter Decision")
 
         st.success(
-            metrics["Recommendation"]
+
+            hiring_report["Recommendation"]
+
         )
 
         st.info(
+
             report["Recruiter Decision"]
+
+        )
+
+        st.warning(
+
+            f'Risk Level : {hiring_report["Risk"]}'
+
+        )
+
+        st.metric(
+
+            "Hiring Probability",
+
+            f'{hiring_report["Hiring Probability"]}%'
+
         )
 
         st.divider()
@@ -223,6 +284,8 @@ def recruiter_dashboard_page():
         st.json({
 
             "Analytics": metrics,
+
+            "Hiring Report": hiring_report,
 
             "AI Review": report
 
