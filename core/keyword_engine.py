@@ -1,249 +1,365 @@
 """
 =========================================================
-Resume Intelligence AI
-Keyword & ATS Engine
+NEXUS AI
+Enterprise Keyword Engine
+Version : 10.0 Enterprise
 Author : Naveen Kumar
-Version : 5.0
 =========================================================
 """
 
-import pandas as pd
 import re
+from collections import Counter
 
 
 class KeywordEngine:
 
-    def __init__(self, skills_file="data/skills_master.csv"):
+    def __init__(self):
 
-        self.skills = pd.read_csv(skills_file)
+        self.skill_database = {
 
-    # ------------------------------------
-    # Clean Resume
-    # ------------------------------------
+            "Programming": [
+                "Python", "Java", "C", "C++", "C#", "JavaScript",
+                "TypeScript", "Go", "Rust", "PHP", "R", "MATLAB"
+            ],
 
-    def clean(self, text):
+            "Data Science": [
+                "NumPy", "Pandas", "Scikit-learn",
+                "Matplotlib", "Seaborn",
+                "Plotly", "SciPy", "OpenCV"
+            ],
 
-        text = text.lower()
+            "Machine Learning": [
+                "Machine Learning",
+                "Deep Learning",
+                "TensorFlow",
+                "PyTorch",
+                "Keras",
+                "XGBoost",
+                "LightGBM",
+                "CatBoost"
+            ],
 
-        text = re.sub(r'[^a-zA-Z0-9 ]', ' ', text)
+            "NLP": [
+                "NLP",
+                "spaCy",
+                "NLTK",
+                "Transformers",
+                "BERT",
+                "GPT",
+                "LangChain",
+                "RAG",
+                "FAISS"
+            ],
 
-        return text
+            "Databases": [
+                "SQL",
+                "MySQL",
+                "PostgreSQL",
+                "MongoDB",
+                "Oracle",
+                "SQLite"
+            ],
 
-    # ------------------------------------
-    # Extract Skills
-    # ------------------------------------
+            "Cloud": [
+                "AWS",
+                "Azure",
+                "Google Cloud",
+                "GCP"
+            ],
 
-    def extract_skills(self, resume_text):
+            "DevOps": [
+                "Docker",
+                "Kubernetes",
+                "Git",
+                "GitHub",
+                "CI/CD",
+                "Linux",
+                "Jenkins"
+            ],
 
-        resume = self.clean(resume_text)
+            "BI": [
+                "Excel",
+                "Power BI",
+                "Tableau",
+                "Looker"
+            ]
+        }
+
+        self.soft_skills = [
+
+            "Leadership",
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Teamwork",
+            "Decision Making",
+            "Presentation",
+            "Negotiation",
+            "Management",
+            "Time Management"
+
+        ]
+
+        self.certifications = [
+
+            "AWS Certified",
+            "Azure",
+            "Google Professional",
+            "PMP",
+            "ITIL",
+            "CCNA",
+            "CompTIA",
+            "Microsoft Certified",
+            "Oracle Certified"
+
+        ]
+
+    # --------------------------------------------------
+
+    def clean_text(self, text):
+
+        return re.sub(r"\s+", " ", text.lower())
+
+    # --------------------------------------------------
+
+    def extract_skills(self, text):
+
+        text = self.clean_text(text)
 
         found = []
 
-        for skill in self.skills["Skill"]:
+        for category in self.skill_database.values():
 
-            if skill.lower() in resume:
+            for skill in category:
 
-                found.append(skill)
+                if skill.lower() in text:
+
+                    found.append(skill)
 
         return sorted(list(set(found)))
 
-    # ------------------------------------
-    # Technical Skills
-    # ------------------------------------
+    # --------------------------------------------------
 
-    def technical_skills(self, skills):
+    def extract_soft_skills(self, text):
 
-        df = self.skills
+        text = self.clean_text(text)
 
-        technical = df[
-            df["Category"].isin(
-                [
-                    "Programming",
-                    "Database",
-                    "Machine Learning",
-                    "Deep Learning",
-                    "Artificial Intelligence",
-                    "Cloud",
-                    "Deployment",
-                    "DevOps",
-                    "Facility Management",
-                    "Analytics",
-                    "Data Visualization"
-                ]
-            )
-        ]
+        found = []
 
-        return list(
-            set(skills).intersection(
-                set(technical["Skill"])
-            )
-        )
+        for skill in self.soft_skills:
 
-    # ------------------------------------
-    # Soft Skills
-    # ------------------------------------
+            if skill.lower() in text:
 
-    def soft_skills(self, skills):
+                found.append(skill)
 
-        df = self.skills
+        return sorted(found)
 
-        soft = df[
-            df["Category"] == "Soft Skill"
-        ]
+    # --------------------------------------------------
 
-        return list(
-            set(skills).intersection(
-                set(soft["Skill"])
-            )
-        )
+    def extract_certifications(self, text):
 
-    # ------------------------------------
-    # Match Skills
-    # ------------------------------------
+        text = self.clean_text(text)
 
-    def compare(self, resume_skills, required_skills):
+        found = []
 
-        matched = []
+        for cert in self.certifications:
+
+            if cert.lower() in text:
+
+                found.append(cert)
+
+        return sorted(found)
+
+    # --------------------------------------------------
+
+    def keyword_frequency(self, text):
+
+        words = re.findall(r"\b\w+\b", text.lower())
+
+        return Counter(words)
+
+    # --------------------------------------------------
+
+    def keyword_density(self, text):
+
+        words = re.findall(r"\b\w+\b", text.lower())
+
+        total = len(words)
+
+        freq = Counter(words)
+
+        density = {}
+
+        for word, count in freq.items():
+
+            density[word] = round(count / total * 100, 2)
+
+        return density
+
+    # --------------------------------------------------
+
+    def missing_keywords(self, resume_text, job_keywords):
+
+        resume = self.clean_text(resume_text)
 
         missing = []
 
-        for skill in required_skills:
+        for keyword in job_keywords:
 
-            if skill in resume_skills:
+            if keyword.lower() not in resume:
 
-                matched.append(skill)
+                missing.append(keyword)
 
-            else:
+        return missing
 
-                missing.append(skill)
+    # --------------------------------------------------
 
-        return matched, missing
+    def matched_keywords(self, resume_text, job_keywords):
 
-    # ------------------------------------
-    # ATS %
-    # ------------------------------------
+        resume = self.clean_text(resume_text)
 
-    def ats_score(self, matched, required):
+        matched = []
 
-        if len(required) == 0:
+        for keyword in job_keywords:
+
+            if keyword.lower() in resume:
+
+                matched.append(keyword)
+
+        return matched
+
+    # --------------------------------------------------
+
+    def keyword_score(self, resume_text, job_keywords):
+
+        matched = self.matched_keywords(
+
+            resume_text,
+
+            job_keywords
+
+        )
+
+        if len(job_keywords) == 0:
 
             return 0
 
-        return round(
-            len(matched) / len(required) * 100,
-            2
-        )
+        score = len(matched) / len(job_keywords) * 100
 
-    # ------------------------------------
-    # Skill Gap
-    # ------------------------------------
+        return round(score, 2)
 
-    def skill_gap(self, matched, missing):
+    # --------------------------------------------------
+
+    def role_database(self):
 
         return {
 
-            "Matched Skills": len(matched),
+            "Data Scientist": [
 
-            "Missing Skills": len(missing),
+                "Python",
 
-            "Gap %": round(
+                "Machine Learning",
 
-                len(missing) /
+                "Deep Learning",
 
-                (len(matched)+len(missing))
+                "SQL",
 
-                *100,
+                "Pandas",
 
-                2
+                "NumPy",
 
-            )
+                "TensorFlow",
+
+                "Scikit-learn"
+
+            ],
+
+            "Data Analyst": [
+
+                "Excel",
+
+                "SQL",
+
+                "Power BI",
+
+                "Python",
+
+                "Tableau",
+
+                "Statistics"
+
+            ],
+
+            "AI Engineer": [
+
+                "Python",
+
+                "TensorFlow",
+
+                "PyTorch",
+
+                "LangChain",
+
+                "RAG",
+
+                "LLM",
+
+                "Docker"
+
+            ],
+
+            "Backend Developer": [
+
+                "Python",
+
+                "Java",
+
+                "SQL",
+
+                "Docker",
+
+                "Git",
+
+                "API"
+
+            ]
 
         }
 
-    # ------------------------------------
-    # Importance Ranking
-    # ------------------------------------
+    # --------------------------------------------------
 
-    def rank_missing(self, missing):
+    def role_match(self, resume_text, role):
 
-        priority = []
+        db = self.role_database()
 
-        for skill in missing:
+        if role not in db:
 
-            priority.append(
+            return 0
 
-                {
+        return self.keyword_score(
 
-                    "Skill": skill,
+            resume_text,
 
-                    "Priority": "High"
-
-                }
-
-            )
-
-        return pd.DataFrame(priority)
-
-    # ------------------------------------
-    # Complete ATS Analysis
-    # ------------------------------------
-
-    def analyze(self, resume_text, required_skills):
-
-        resume_skills = self.extract_skills(resume_text)
-
-        matched, missing = self.compare(
-
-            resume_skills,
-
-            required_skills
+            db[role]
 
         )
 
-        report = {
+    # --------------------------------------------------
 
-            "Resume Skills": resume_skills,
+    def summary(self, resume_text):
+
+        return {
 
             "Technical Skills":
 
-                self.technical_skills(resume_skills),
+                self.extract_skills(resume_text),
 
             "Soft Skills":
 
-                self.soft_skills(resume_skills),
+                self.extract_soft_skills(resume_text),
 
-            "Matched Skills": matched,
+            "Certifications":
 
-            "Missing Skills": missing,
-
-            "ATS Score":
-
-                self.ats_score(
-
-                    matched,
-
-                    required_skills
-
-                ),
-
-            "Skill Gap":
-
-                self.skill_gap(
-
-                    matched,
-
-                    missing
-
-                ),
-
-            "Priority":
-
-                self.rank_missing(
-
-                    missing
-
-                )
+                self.extract_certifications(resume_text)
 
         }
-
-        return report

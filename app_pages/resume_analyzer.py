@@ -35,7 +35,10 @@ def resume_analyzer_page():
     parser = ResumeParser()
 
     with st.spinner("Analyzing Resume..."):
-        result = parser.analyze(uploaded_file)
+        result["ats_analysis"]
+        result["experience"]
+        result["education"]
+        result["projects"]
 
     st.success("Resume analyzed successfully.")
 
