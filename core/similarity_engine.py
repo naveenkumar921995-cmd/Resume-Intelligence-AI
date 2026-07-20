@@ -2,8 +2,8 @@
 =========================================================
 NEXUS AI
 Enterprise NLP Similarity Engine
+Version : 11.0 Enterprise
 Author : Naveen Kumar
-Version : 9.0
 =========================================================
 """
 
@@ -12,22 +12,28 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from core.keyword_engine import KeywordEngine
+
 
 class SimilarityEngine:
 
     def __init__(self):
 
+        self.keyword_engine = KeywordEngine()
+
         self.vectorizer = TfidfVectorizer(
 
             stop_words="english",
 
-            lowercase=True
+            lowercase=True,
+
+            ngram_range=(1, 2)
 
         )
 
-    # --------------------------------------------------
-    # Clean Text
-    # --------------------------------------------------
+    # =====================================================
+    # CLEAN TEXT
+    # =====================================================
 
     def clean_text(self, text):
 
@@ -35,17 +41,35 @@ class SimilarityEngine:
 
             return ""
 
-        text = str(text).lower()
+        text = str(text)
 
-        text = re.sub(r"[^a-zA-Z0-9 ]", " ", text)
+        text = text.lower()
 
-        text = re.sub(r"\s+", " ", text)
+        text = re.sub(
+
+            r"[^a-zA-Z0-9+#.]",
+
+            " ",
+
+            text
+
+        )
+
+        text = re.sub(
+
+            r"\s+",
+
+            " ",
+
+            text
+
+        )
 
         return text.strip()
 
-    # --------------------------------------------------
-    # Vectorization
-    # --------------------------------------------------
+    # =====================================================
+    # TF-IDF
+    # =====================================================
 
     def vectorize(
 
@@ -75,9 +99,9 @@ class SimilarityEngine:
 
         return vectors
 
-    # --------------------------------------------------
-    # Similarity Score
-    # --------------------------------------------------
+    # =====================================================
+    # COSINE SIMILARITY
+    # =====================================================
 
     def similarity_score(
 
@@ -89,9 +113,13 @@ class SimilarityEngine:
 
     ):
 
-        if not resume or not job:
+        if not resume:
 
-            return 0.0
+            return 0
+
+        if not job:
+
+            return 0
 
         vectors = self.vectorize(
 
@@ -117,9 +145,168 @@ class SimilarityEngine:
 
         )
 
-    # --------------------------------------------------
-    # Grade
-    # --------------------------------------------------
+    # =====================================================
+    # KEYWORD MATCH
+    # =====================================================
+
+    def keyword_match(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
+
+        resume_words = set(
+
+            self.clean_text(
+
+                resume
+
+            ).split()
+
+        )
+
+        job_words = set(
+
+            self.clean_text(
+
+                job
+
+            ).split()
+
+        )
+
+        if len(job_words) == 0:
+
+            return 0
+
+        matched = resume_words.intersection(
+
+            job_words
+
+        )
+
+        return round(
+
+            len(matched)
+
+            /
+
+            len(job_words)
+
+            *
+
+            100,
+
+            2
+
+        )
+    # =====================================================
+    # SKILL MATCH
+    # =====================================================
+
+    def skill_match(
+
+        self,
+
+        resume,
+
+        job
+
+    ):
+
+        resume_skills = self.keyword_engine.extract_skills(
+
+            resume
+
+        )
+
+        job_skills = self.keyword_engine.extract_skills(
+
+            job
+
+        )
+
+        matched = []
+
+        missing = []
+
+        for skill in job_skills:
+
+            if skill in resume_skills:
+
+                matched.append(skill)
+
+            else:
+
+                missing.append(skill)
+
+        coverage = 0
+
+        if len(job_skills) > 0:
+
+            coverage = round(
+
+                len(matched)
+
+                /
+
+                len(job_skills)
+
+                * 100,
+
+                2
+
+            )
+
+        return {
+
+            "Resume Skills": resume_skills,
+
+            "Job Skills": job_skills,
+
+            "Matched Skills": matched,
+
+            "Missing Skills": missing,
+
+            "Skill Coverage": coverage
+
+        }
+
+    # =====================================================
+    # OVERALL MATCH
+    # =====================================================
+
+    def overall_match(
+
+        self,
+
+        similarity,
+
+        keyword,
+
+        skill
+
+    ):
+
+        score = (
+
+            similarity * 0.50 +
+
+            keyword * 0.20 +
+
+            skill * 0.30
+
+        )
+
+        return round(score, 2)
+
+    # =====================================================
+    # GRADE
+    # =====================================================
 
     def grade(
 
@@ -145,45 +332,15 @@ class SimilarityEngine:
 
             return "B"
 
-        else:
+        elif score >= 50:
 
             return "C"
 
-    # --------------------------------------------------
-    # Hiring Status
-    # --------------------------------------------------
+        return "D"
 
-    def hiring_status(
-
-        self,
-
-        score
-
-    ):
-
-        if score >= 95:
-
-            return "🟢 Outstanding Match"
-
-        elif score >= 85:
-
-            return "🟢 Highly Recommended"
-
-        elif score >= 75:
-
-            return "🟡 Recommended"
-
-        elif score >= 60:
-
-            return "🟠 Consider After Review"
-
-        else:
-
-            return "🔴 Poor Match"
-
-    # --------------------------------------------------
-    # Confidence
-    # --------------------------------------------------
+    # =====================================================
+    # CONFIDENCE
+    # =====================================================
 
     def confidence(
 
@@ -197,106 +354,135 @@ class SimilarityEngine:
 
             return "Very High"
 
-        elif score >= 75:
+        elif score >= 80:
 
             return "High"
 
-        elif score >= 60:
+        elif score >= 65:
 
             return "Medium"
 
-        else:
+        return "Low"
 
-            return "Low"
+    # =====================================================
+    # ATS SCORE
+    # =====================================================
 
-    # --------------------------------------------------
-    # Recommendation
-    # --------------------------------------------------
+    def ats_score(
+
+        self,
+
+        overall
+
+    ):
+
+        ats = overall * 1.05
+
+        if ats > 100:
+
+            ats = 100
+
+        return round(ats, 2)
+    # =====================================================
+    # HIRING STATUS
+    # =====================================================
+
+    def hiring_status(self, score):
+
+        if score >= 95:
+            return "🟢 Outstanding Match"
+
+        elif score >= 85:
+            return "🟢 Highly Recommended"
+
+        elif score >= 75:
+            return "🟡 Recommended"
+
+        elif score >= 60:
+            return "🟠 Consider After Review"
+
+        return "🔴 Poor Match"
+
+    # =====================================================
+    # RECRUITER DECISION
+    # =====================================================
+
+    def recruiter_decision(self, score):
+
+        if score >= 90:
+            return "Proceed to Technical Interview"
+
+        elif score >= 75:
+            return "Shortlist Candidate"
+
+        elif score >= 60:
+            return "Keep for Future Review"
+
+        return "Reject"
+
+    # =====================================================
+    # RECOMMENDATION
+    # =====================================================
 
     def recommendation(
 
         self,
 
-        score
+        overall,
+
+        missing_skills
 
     ):
 
-        if score >= 90:
+        if overall >= 90:
 
             return (
-                "Excellent alignment between the resume and "
-                "the job description."
+
+                "Excellent alignment with the Job Description. "
+
+                "Resume is highly ATS optimized."
+
             )
 
-        elif score >= 75:
+        if overall >= 75:
+
+            if missing_skills:
+
+                return (
+
+                    "Strong profile. Improve these skills: "
+
+                    + ", ".join(missing_skills[:5])
+
+                )
 
             return (
-                "Good match. Improve a few missing skills "
-                "to increase ATS performance."
+
+                "Strong profile with good ATS compatibility."
+
             )
 
-        elif score >= 60:
+        if overall >= 60:
 
             return (
-                "Average match. Add more technical keywords, "
-                "projects and measurable achievements."
+
+                "Average match. Add more projects, measurable "
+
+                "achievements and technical keywords."
+
             )
 
-        elif score >= 40:
+        return (
 
-            return (
-                "Resume requires optimization before applying."
-            )
+            "Resume requires significant improvement before "
 
-        else:
-
-            return (
-                "Resume has very low similarity with the target role."
-            )
-
-    # --------------------------------------------------
-    # Keyword Match
-    # --------------------------------------------------
-
-    def keyword_match(
-
-        self,
-
-        resume,
-
-        job
-
-    ):
-
-        resume_words = set(
-
-            self.clean_text(resume).split()
+            "applying for this role."
 
         )
 
-        job_words = set(
-
-            self.clean_text(job).split()
-
-        )
-
-        if len(job_words) == 0:
-
-            return 0
-
-        matched = resume_words.intersection(job_words)
-
-        return round(
-
-            len(matched) / len(job_words) * 100,
-
-            2
-
-        )
-
-    # --------------------------------------------------
-    # Complete Analysis
-    # --------------------------------------------------
+    # =====================================================
+    # COMPLETE ANALYSIS
+    # =====================================================
 
     def analyze(
 
@@ -308,7 +494,7 @@ class SimilarityEngine:
 
     ):
 
-        score = self.similarity_score(
+        similarity = self.similarity_score(
 
             resume,
 
@@ -316,26 +502,72 @@ class SimilarityEngine:
 
         )
 
-        keyword_score = self.keyword_match(
+        keyword = self.keyword_match(
 
             resume,
 
             job
+
+        )
+
+        skill_report = self.skill_match(
+
+            resume,
+
+            job
+
+        )
+
+        overall = self.overall_match(
+
+            similarity,
+
+            keyword,
+
+            skill_report["Skill Coverage"]
+
+        )
+
+        ats = self.ats_score(
+
+            overall
 
         )
 
         return {
 
-            "Similarity Score": score,
+            "Similarity Score": similarity,
 
-            "Keyword Match": keyword_score,
+            "Keyword Match": keyword,
 
-            "Grade": self.grade(score),
+            "Skill Coverage": skill_report["Skill Coverage"],
 
-            "Confidence": self.confidence(score),
+            "Overall Match": overall,
 
-            "Hiring Status": self.hiring_status(score),
+            "ATS Score": ats,
 
-            "Recommendation": self.recommendation(score)
+            "Resume Skills": skill_report["Resume Skills"],
+
+            "Job Skills": skill_report["Job Skills"],
+
+            "Matched Skills": skill_report["Matched Skills"],
+
+            "Missing Skills": skill_report["Missing Skills"],
+
+            "Grade": self.grade(overall),
+
+            "Confidence": self.confidence(overall),
+
+            "Hiring Status": self.hiring_status(overall),
+
+            "Recruiter Decision": self.recruiter_decision(overall),
+
+            "Recommendation": self.recommendation(
+
+                overall,
+
+                skill_report["Missing Skills"]
+
+            )
 
         }

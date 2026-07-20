@@ -286,7 +286,8 @@ class ResumeParser:
         if self.extract_github(text):
             score += 5
 
-        skills = self.extract_skills(text)
+        keyword_report = self.keyword_engine.analyze(text)
+        skills = keyword_report["Skills"]
 
         score += min(len(skills) * 2, 20)
 

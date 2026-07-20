@@ -2,364 +2,242 @@
 =========================================================
 NEXUS AI
 Enterprise Keyword Engine
-Version : 10.0 Enterprise
+Version : 11.0 Enterprise
 Author : Naveen Kumar
 =========================================================
 """
 
 import re
-from collections import Counter
+
+from core.skill_database import MASTER_SKILLS
+from core.alias_database import ALIASES
+from core.skill_categories import SKILL_CATEGORIES
+from core.role_database import ROLE_SKILLS
 
 
 class KeywordEngine:
 
     def __init__(self):
 
-        self.skill_database = {
+        self.skills = sorted(
+            MASTER_SKILLS,
+            key=len,
+            reverse=True
+        )
 
-            "Programming": [
-                "Python", "Java", "C", "C++", "C#", "JavaScript",
-                "TypeScript", "Go", "Rust", "PHP", "R", "MATLAB"
-            ],
+    # =====================================================
+    # Normalize Text
+    # =====================================================
 
-            "Data Science": [
-                "NumPy", "Pandas", "Scikit-learn",
-                "Matplotlib", "Seaborn",
-                "Plotly", "SciPy", "OpenCV"
-            ],
+    def normalize(self, text):
 
-            "Machine Learning": [
-                "Machine Learning",
-                "Deep Learning",
-                "TensorFlow",
-                "PyTorch",
-                "Keras",
-                "XGBoost",
-                "LightGBM",
-                "CatBoost"
-            ],
+        return text.lower()
 
-            "NLP": [
-                "NLP",
-                "spaCy",
-                "NLTK",
-                "Transformers",
-                "BERT",
-                "GPT",
-                "LangChain",
-                "RAG",
-                "FAISS"
-            ],
+    # =====================================================
+    # Apply Skill Aliases
+    # =====================================================
 
-            "Databases": [
-                "SQL",
-                "MySQL",
-                "PostgreSQL",
-                "MongoDB",
-                "Oracle",
-                "SQLite"
-            ],
+    def apply_aliases(self, text):
 
-            "Cloud": [
-                "AWS",
-                "Azure",
-                "Google Cloud",
-                "GCP"
-            ],
+        text = text.lower()
 
-            "DevOps": [
-                "Docker",
-                "Kubernetes",
-                "Git",
-                "GitHub",
-                "CI/CD",
-                "Linux",
-                "Jenkins"
-            ],
+        for alias, actual in ALIASES.items():
 
-            "BI": [
-                "Excel",
-                "Power BI",
-                "Tableau",
-                "Looker"
-            ]
-        }
+            pattern = r"\b" + re.escape(alias.lower()) + r"\b"
 
-        self.soft_skills = [
+            text = re.sub(
+                pattern,
+                actual.lower(),
+                text
+            )
 
-            "Leadership",
-            "Communication",
-            "Problem Solving",
-            "Critical Thinking",
-            "Teamwork",
-            "Decision Making",
-            "Presentation",
-            "Negotiation",
-            "Management",
-            "Time Management"
+        return text
 
-        ]
-
-        self.certifications = [
-
-            "AWS Certified",
-            "Azure",
-            "Google Professional",
-            "PMP",
-            "ITIL",
-            "CCNA",
-            "CompTIA",
-            "Microsoft Certified",
-            "Oracle Certified"
-
-        ]
-
-    # --------------------------------------------------
-
-    def clean_text(self, text):
-
-        return re.sub(r"\s+", " ", text.lower())
-
-    # --------------------------------------------------
+    # =====================================================
+    # Extract Skills
+    # =====================================================
 
     def extract_skills(self, text):
 
-        text = self.clean_text(text)
+        text = self.apply_aliases(text)
 
         found = []
 
-        for category in self.skill_database.values():
+        for skill in self.skills:
 
-            for skill in category:
+            pattern = r"\b" + re.escape(skill.lower()) + r"\b"
 
-                if skill.lower() in text:
-
-                    found.append(skill)
-
-        return sorted(list(set(found)))
-
-    # --------------------------------------------------
-
-    def extract_soft_skills(self, text):
-
-        text = self.clean_text(text)
-
-        found = []
-
-        for skill in self.soft_skills:
-
-            if skill.lower() in text:
+            if re.search(pattern, text):
 
                 found.append(skill)
 
-        return sorted(found)
+        return sorted(list(set(found)))
 
-    # --------------------------------------------------
+    # =====================================================
+    # Skill Categories
+    # =====================================================
 
-    def extract_certifications(self, text):
+    def categorize(self, skills):
 
-        text = self.clean_text(text)
+        result = {}
 
-        found = []
+        for category, values in SKILL_CATEGORIES.items():
 
-        for cert in self.certifications:
+            matched = []
 
-            if cert.lower() in text:
+            for skill in values:
 
-                found.append(cert)
+                if skill in skills:
 
-        return sorted(found)
+                    matched.append(skill)
 
-    # --------------------------------------------------
+            if matched:
 
-    def keyword_frequency(self, text):
+                result[category] = matched
 
-        words = re.findall(r"\b\w+\b", text.lower())
+        return result
 
-        return Counter(words)
+    # =====================================================
+    # Skill Frequency
+    # =====================================================
 
-    # --------------------------------------------------
+    def frequency(self, text):
 
-    def keyword_density(self, text):
+        text = self.apply_aliases(text)
 
-        words = re.findall(r"\b\w+\b", text.lower())
+        freq = {}
 
-        total = len(words)
+        for skill in self.skills:
 
-        freq = Counter(words)
+            pattern = r"\b" + re.escape(skill.lower()) + r"\b"
 
-        density = {}
+            count = len(
+                re.findall(
+                    pattern,
+                    text
+                )
+            )
 
-        for word, count in freq.items():
+            if count > 0:
 
-            density[word] = round(count / total * 100, 2)
+                freq[skill] = count
 
-        return density
+        return dict(
 
-    # --------------------------------------------------
+            sorted(
 
-    def missing_keywords(self, resume_text, job_keywords):
+                freq.items(),
 
-        resume = self.clean_text(resume_text)
+                key=lambda x: x[1],
 
-        missing = []
+                reverse=True
 
-        for keyword in job_keywords:
+            )
 
-            if keyword.lower() not in resume:
+        )
 
-                missing.append(keyword)
+    # =====================================================
+    # Match Against Job Role
+    # =====================================================
 
-        return missing
+    def role_match(
 
-    # --------------------------------------------------
+        self,
 
-    def matched_keywords(self, resume_text, job_keywords):
+        detected_skills,
 
-        resume = self.clean_text(resume_text)
+        role
+
+    ):
+
+        required = ROLE_SKILLS.get(
+
+            role,
+
+            []
+
+        )
 
         matched = []
 
-        for keyword in job_keywords:
+        missing = []
 
-            if keyword.lower() in resume:
+        for skill in required:
 
-                matched.append(keyword)
+            if skill in detected_skills:
 
-        return matched
+                matched.append(skill)
 
-    # --------------------------------------------------
+            else:
 
-    def keyword_score(self, resume_text, job_keywords):
+                missing.append(skill)
 
-        matched = self.matched_keywords(
+        coverage = 0
 
-            resume_text,
+        if required:
 
-            job_keywords
+            coverage = round(
 
-        )
+                len(matched)
 
-        if len(job_keywords) == 0:
+                /
 
-            return 0
+                len(required)
 
-        score = len(matched) / len(job_keywords) * 100
+                * 100,
 
-        return round(score, 2)
+                2
 
-    # --------------------------------------------------
-
-    def role_database(self):
+            )
 
         return {
 
-            "Data Scientist": [
+            "Role": role,
 
-                "Python",
+            "Coverage": coverage,
 
-                "Machine Learning",
+            "Matched Skills": matched,
 
-                "Deep Learning",
-
-                "SQL",
-
-                "Pandas",
-
-                "NumPy",
-
-                "TensorFlow",
-
-                "Scikit-learn"
-
-            ],
-
-            "Data Analyst": [
-
-                "Excel",
-
-                "SQL",
-
-                "Power BI",
-
-                "Python",
-
-                "Tableau",
-
-                "Statistics"
-
-            ],
-
-            "AI Engineer": [
-
-                "Python",
-
-                "TensorFlow",
-
-                "PyTorch",
-
-                "LangChain",
-
-                "RAG",
-
-                "LLM",
-
-                "Docker"
-
-            ],
-
-            "Backend Developer": [
-
-                "Python",
-
-                "Java",
-
-                "SQL",
-
-                "Docker",
-
-                "Git",
-
-                "API"
-
-            ]
+            "Missing Skills": missing
 
         }
 
-    # --------------------------------------------------
+    # =====================================================
+    # Enterprise Analysis
+    # =====================================================
 
-    def role_match(self, resume_text, role):
+    def analyze(
 
-        db = self.role_database()
+        self,
 
-        if role not in db:
+        text,
 
-            return 0
+        role=None
 
-        return self.keyword_score(
+    ):
 
-            resume_text,
+        skills = self.extract_skills(text)
 
-            db[role]
+        report = {
 
-        )
+            "Skills": skills,
 
-    # --------------------------------------------------
+            "Skill Count": len(skills),
 
-    def summary(self, resume_text):
+            "Categories": self.categorize(skills),
 
-        return {
-
-            "Technical Skills":
-
-                self.extract_skills(resume_text),
-
-            "Soft Skills":
-
-                self.extract_soft_skills(resume_text),
-
-            "Certifications":
-
-                self.extract_certifications(resume_text)
+            "Frequency": self.frequency(text)
 
         }
+
+        if role:
+
+            report["Role Analysis"] = self.role_match(
+
+                skills,
+
+                role
+
+            )
+
+        return report
