@@ -1,13 +1,12 @@
 """
-===========================================================
-Resume Intelligence AI
-Resume Parser Module
+=========================================================
+NEXUS AI
+Enterprise Resume Parser
+Version : 10.0 Enterprise
 Author : Naveen Kumar
-Version : 5.0
-===========================================================
+=========================================================
 """
 
-import os
 import re
 import pdfplumber
 import docx
@@ -15,202 +14,165 @@ import docx
 
 class ResumeParser:
 
-    def __init__(self):
-        pass
+    def extract_text(self, uploaded_file):
 
-    # ---------------------------------------------
-    # Detect File Type
-    # ---------------------------------------------
-    def parse(self, uploaded_file):
+        if uploaded_file.name.endswith(".pdf"):
 
-        filename = uploaded_file.name.lower()
-
-        if filename.endswith(".pdf"):
-            return self.extract_pdf(uploaded_file)
-
-        elif filename.endswith(".docx"):
-            return self.extract_docx(uploaded_file)
-
-        else:
-            raise ValueError("Unsupported File Format")
-
-    # ---------------------------------------------
-    # PDF Extraction
-    # ---------------------------------------------
-    def extract_pdf(self, uploaded_file):
-
-        text = ""
-
-        try:
+            text = ""
 
             with pdfplumber.open(uploaded_file) as pdf:
 
                 for page in pdf.pages:
+                    text += page.extract_text() or ""
 
-                    extracted = page.extract_text()
+            return text
 
-                    if extracted:
-                        text += extracted + "\n"
-
-        except Exception as e:
-
-            print(e)
-
-        return text
-
-    # ---------------------------------------------
-    # DOCX Extraction
-    # ---------------------------------------------
-    def extract_docx(self, uploaded_file):
-
-        text = ""
-
-        try:
+        elif uploaded_file.name.endswith(".docx"):
 
             doc = docx.Document(uploaded_file)
 
-            for para in doc.paragraphs:
+            return "\n".join([p.text for p in doc.paragraphs])
 
-                text += para.text + "\n"
+        return ""
 
-        except Exception as e:
+    # -------------------------------------------------
 
-            print(e)
-
-        return text
-
-    # ---------------------------------------------
-    # Basic Cleaning
-    # ---------------------------------------------
-    def clean_text(self, text):
-
-        text = text.lower()
-
-        text = re.sub(r"\n", " ", text)
-
-        text = re.sub(r"\t", " ", text)
-
-        text = re.sub(r"\s+", " ", text)
-
-        return text.strip()
-
-    # ---------------------------------------------
-    # Word Count
-    # ---------------------------------------------
-    def word_count(self, text):
-
-        return len(text.split())
-
-    # ---------------------------------------------
-    # Character Count
-    # ---------------------------------------------
-    def character_count(self, text):
-
-        return len(text)
-
-    # ---------------------------------------------
-    # Line Count
-    # ---------------------------------------------
-    def line_count(self, text):
-
-        return len(text.split("\n"))
-
-    # ---------------------------------------------
-    # Email Extraction
-    # ---------------------------------------------
     def extract_email(self, text):
 
-        pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+        m = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text)
 
-        emails = re.findall(pattern, text)
+        return m.group(0) if m else ""
 
-        return emails[0] if emails else "Not Found"
+    # -------------------------------------------------
 
-    # ---------------------------------------------
-    # Phone Number
-    # ---------------------------------------------
     def extract_phone(self, text):
 
-        pattern = r"(\+91[-\s]?)?[6-9]\d{9}"
+        m = re.search(r'(\+91[\-\s]?)?[6-9]\d{9}', text)
 
-        phones = re.findall(pattern, text)
+        return m.group(0) if m else ""
 
-        if phones:
+    # -------------------------------------------------
 
-            return phones[0]
-
-        return "Not Found"
-
-    # ---------------------------------------------
-    # LinkedIn
-    # ---------------------------------------------
     def extract_linkedin(self, text):
 
-        pattern = r"(https?://)?(www\.)?linkedin\.com/in/[A-Za-z0-9_-]+"
+        m = re.search(r'https?://(www\.)?linkedin\.com/\S+', text)
 
-        linkedin = re.findall(pattern, text)
+        return m.group(0) if m else ""
 
-        if linkedin:
+    # -------------------------------------------------
 
-            return "LinkedIn Found"
-
-        return "Not Found"
-
-    # ---------------------------------------------
-    # GitHub
-    # ---------------------------------------------
     def extract_github(self, text):
 
-        pattern = r"(https?://)?(www\.)?github\.com/[A-Za-z0-9_-]+"
+        m = re.search(r'https?://(www\.)?github\.com/\S+', text)
 
-        github = re.findall(pattern, text)
+        return m.group(0) if m else ""
 
-        if github:
+    # -------------------------------------------------
 
-            return "GitHub Found"
+    def extract_skills(self, text):
 
-        return "Not Found"
+        master = [
 
-    # ---------------------------------------------
-    # Portfolio
-    # ---------------------------------------------
-    def extract_portfolio(self, text):
+            "Python","SQL","Pandas","NumPy",
 
-        websites = re.findall(r'https?://\S+', text)
+            "Machine Learning","Deep Learning",
 
-        return websites
+            "TensorFlow","PyTorch","Power BI",
 
-    # ---------------------------------------------
-    # Complete Analysis
-    # ---------------------------------------------
-    def analyze(self, uploaded_file):
+            "Excel","AWS","Azure","Docker",
 
-        raw_text = self.parse(uploaded_file)
+            "Kubernetes","Git","Linux"
 
-        clean = self.clean_text(raw_text)
+        ]
 
-        result = {
+        found=[]
 
-            "raw_text": raw_text,
+        lower=text.lower()
 
-            "clean_text": clean,
+        for skill in master:
 
-            "word_count": self.word_count(raw_text),
+            if skill.lower() in lower:
 
-            "character_count": self.character_count(raw_text),
+                found.append(skill)
 
-            "line_count": self.line_count(raw_text),
+        return sorted(found)
 
-            "email": self.extract_email(raw_text),
+    # -------------------------------------------------
 
-            "phone": self.extract_phone(raw_text),
+    def extract_name(self,text):
 
-            "linkedin": self.extract_linkedin(raw_text),
+        lines=text.split("\n")
 
-            "github": self.extract_github(raw_text),
+        for line in lines[:5]:
 
-            "portfolio": self.extract_portfolio(raw_text)
+            if len(line.split())<=4 and len(line)>3:
+
+                return line.strip()
+
+        return "Unknown"
+
+    # -------------------------------------------------
+
+    def reading_time(self,text):
+
+        words=len(text.split())
+
+        return round(words/200,1)
+
+    # -------------------------------------------------
+
+    def resume_score(self,text):
+
+        score=50
+
+        if self.extract_email(text):
+            score+=10
+
+        if self.extract_phone(text):
+            score+=10
+
+        if self.extract_linkedin(text):
+            score+=5
+
+        if self.extract_github(text):
+            score+=5
+
+        score+=min(len(self.extract_skills(text))*2,20)
+
+        return min(score,100)
+
+    # -------------------------------------------------
+
+    def analyze(self,uploaded_file):
+
+        text=self.extract_text(uploaded_file)
+
+        return{
+
+            "raw_text":text,
+
+            "name":self.extract_name(text),
+
+            "email":self.extract_email(text),
+
+            "phone":self.extract_phone(text),
+
+            "linkedin":self.extract_linkedin(text),
+
+            "github":self.extract_github(text),
+
+            "portfolio":[],
+
+            "skills":self.extract_skills(text),
+
+            "resume_score":self.resume_score(text),
+
+            "reading_time":self.reading_time(text),
+
+            "word_count":len(text.split()),
+
+            "character_count":len(text),
+
+            "line_count":len(text.splitlines())
 
         }
-
-        return result

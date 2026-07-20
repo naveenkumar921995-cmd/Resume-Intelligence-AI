@@ -1,14 +1,19 @@
 """
 =========================================================
-Resume Intelligence AI
+NEXUS AI
 Universal AI Engine
-Version : 9.1 Enterprise
+Version : 10.0 Enterprise
 Author : Naveen Kumar
 =========================================================
 """
 
 from core.analytics import ResumeAnalytics
 from core.ml_prediction import MLPredictor
+from core.ats_engine import ATSScoreEngine
+
+# ------------------------------------------------------
+# Optional Modules
+# ------------------------------------------------------
 
 try:
     from core.deep_learning import DeepLearningModel
@@ -27,6 +32,12 @@ class AIEngine:
 
     def __init__(self):
 
+        # ==========================================
+        # Core Engines
+        # ==========================================
+
+        self.ats = ATSScoreEngine()
+
         self.analytics = ResumeAnalytics()
 
         self.ml = MLPredictor()
@@ -35,17 +46,32 @@ class AIEngine:
 
         self.llm = LLMEngine() if LLM_AVAILABLE else None
 
-    # ==================================================
-    # Machine Learning
-    # ==================================================
+    # =====================================================
+    # ATS ENGINE
+    # =====================================================
+
+    def ats_report(
+        self,
+        parsed_resume,
+        skill_database
+    ):
+
+        return self.ats.analyze(
+            parsed_resume,
+            skill_database
+        )
+
+    # =====================================================
+    # MACHINE LEARNING
+    # =====================================================
 
     def ml_prediction(self, **kwargs):
 
         return self.ml.full_report(**kwargs)
 
-    # ==================================================
-    # Deep Learning
-    # ==================================================
+    # =====================================================
+    # DEEP LEARNING
+    # =====================================================
 
     def dl_prediction(self, **kwargs):
 
@@ -59,45 +85,40 @@ class AIEngine:
 
                 "Hiring Status": "Unavailable",
 
-                "Recommendation": "Deep Learning module is disabled."
+                "Recommendation":
+                    "Deep Learning module disabled."
 
             }
 
         return self.dl.full_report(**kwargs)
 
-    # ==================================================
-    # Analytics
-    # ==================================================
+    # =====================================================
+    # ANALYTICS
+    # =====================================================
 
-    def analytics_summary(self, features):
+    def analytics_summary(
+        self,
+        features
+    ):
 
         return self.analytics.summary(features)
 
     def dashboard_metrics(
-
         self,
-
         ats,
-
         similarity,
-
         quality
-
     ):
 
         return self.analytics.dashboard_metrics(
-
             ats,
-
             similarity,
-
             quality
-
         )
 
-    # ==================================================
-    # AI Career Coach
-    # ==================================================
+    # =====================================================
+    # AI CAREER COACH
+    # =====================================================
 
     def ai_review(
 
@@ -121,15 +142,23 @@ class AIEngine:
 
             return {
 
+                "Executive Summary": "LLM Disabled",
+
                 "AI Review": [
 
-                    "LLM Engine not available."
+                    "LLM module not available."
 
                 ],
 
+                "Strengths": [],
+
+                "Weaknesses": [],
+
+                "Career Advice": [],
+
                 "Recruiter Decision": "Unavailable",
 
-                "Learning Plan": []
+                "Hiring Probability": 0
 
             }
 
@@ -149,13 +178,17 @@ class AIEngine:
 
         )
 
-    # ==================================================
-    # Enterprise Report
-    # ==================================================
+    # =====================================================
+    # COMPLETE ENTERPRISE REPORT
+    # =====================================================
 
     def enterprise_report(
 
         self,
+
+        parsed_resume,
+
+        skill_database,
 
         ats,
 
@@ -175,52 +208,96 @@ class AIEngine:
 
     ):
 
+        ats_result = self.ats_report(
+
+            parsed_resume,
+
+            skill_database
+
+        )
+
+        analytics = self.dashboard_metrics(
+
+            ats,
+
+            similarity,
+
+            quality
+
+        )
+
+        ml = self.ml_prediction(
+
+            **ml_kwargs
+
+        )
+
+        dl = self.dl_prediction(
+
+            **dl_kwargs
+
+        )
+
+        ai = self.ai_review(
+
+            ats,
+
+            similarity,
+
+            quality,
+
+            experience,
+
+            matched,
+
+            missing
+
+        )
+
         return {
 
-            "Analytics":
+            "ATS": ats_result,
 
-                self.dashboard_metrics(
+            "Analytics": analytics,
 
-                    ats,
+            "Machine Learning": ml,
 
-                    similarity,
+            "Deep Learning": dl,
 
-                    quality
+            "AI Review": ai
 
-                ),
+        }
 
-            "Machine Learning":
+    # =====================================================
+    # SYSTEM STATUS
+    # =====================================================
 
-                self.ml_prediction(
+    def system_status(self):
 
-                    **ml_kwargs
+        return {
 
-                ),
+            "ATS Engine": True,
 
-            "Deep Learning":
+            "Analytics": True,
 
-                self.dl_prediction(
+            "Machine Learning": True,
 
-                    **dl_kwargs
+            "Deep Learning": DL_AVAILABLE,
 
-                ),
+            "LLM Engine": LLM_AVAILABLE
 
-            "AI Review":
+        }
 
-                self.ai_review(
+    # =====================================================
+    # VERSION
+    # =====================================================
 
-                    ats,
+    def version(self):
 
-                    similarity,
+        return {
 
-                    quality,
+            "Platform": "NEXUS AI",
 
-                    experience,
-
-                    matched,
-
-                    missing
-
-                )
+            "Version": "10.0 Enterprise"
 
         }

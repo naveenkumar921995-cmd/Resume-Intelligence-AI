@@ -2,8 +2,8 @@
 =========================================================
 NEXUS AI
 Enterprise LLM Engine
+Version : 10.0 Enterprise
 Author : Naveen Kumar
-Version : 9.0
 =========================================================
 """
 
@@ -15,9 +15,9 @@ class LLMEngine:
     def __init__(self):
         pass
 
-    # ==================================================
+    # ======================================================
     # Resume Review
-    # ==================================================
+    # ======================================================
 
     def review_resume(
         self,
@@ -26,75 +26,108 @@ class LLMEngine:
         quality,
         experience,
         matched,
-        missing
+        missing,
     ):
 
         review = []
 
         if ats >= 90:
-            review.append("Excellent ATS compatibility.")
-        elif ats >= 70:
-            review.append("Good ATS compatibility.")
+            review.append("Excellent ATS optimization.")
+        elif ats >= 75:
+            review.append("Good ATS optimization.")
         else:
-            review.append("ATS compatibility requires improvement.")
+            review.append("Improve ATS keywords.")
 
-        if similarity >= 80:
-            review.append("Resume is strongly aligned with the target job.")
+        if similarity >= 85:
+            review.append("Excellent Job Description Match.")
+        elif similarity >= 70:
+            review.append("Good Job Match.")
         else:
-            review.append("Improve alignment with the job description.")
+            review.append("Resume needs better JD alignment.")
 
-        if quality >= 80:
-            review.append("Resume formatting and content are professional.")
+        if quality >= 85:
+            review.append("Professional Resume Formatting.")
         else:
-            review.append("Improve formatting, readability and content quality.")
+            review.append("Improve formatting and readability.")
 
         if experience < 2:
-            review.append("Highlight internships, projects and certifications.")
+            review.append("Add internships and practical projects.")
         elif experience < 5:
-            review.append("Include measurable achievements.")
+            review.append("Highlight measurable achievements.")
         else:
-            review.append("Highlight leadership and business impact.")
+            review.append("Show leadership and business impact.")
 
         if missing:
             review.append(
-                "Top missing skills: "
-                + ", ".join(missing[:5])
+                "Missing Skills: " + ", ".join(missing[:5])
             )
 
         return review
 
-    # ==================================================
+    # ======================================================
     # Strengths
-    # ==================================================
+    # ======================================================
 
     def strengths(self, matched):
 
         if not matched:
-            return ["No technical strengths identified."]
+            return ["No strengths detected."]
 
-        return [f"Strong knowledge of {skill}" for skill in matched[:10]]
+        return [
+            f"Strong knowledge of {skill}"
+            for skill in matched
+        ]
 
-    # ==================================================
+    # ======================================================
     # Weaknesses
-    # ==================================================
+    # ======================================================
 
     def weaknesses(self, missing):
 
         if not missing:
             return ["No major weaknesses detected."]
 
-        return [f"Improve {skill}" for skill in missing[:10]]
+        return [
+            f"Need improvement in {skill}"
+            for skill in missing
+        ]
 
-    # ==================================================
+    # ======================================================
+    # Learning Plan
+    # ======================================================
+
+    def learning_plan(self, missing):
+
+        if not missing:
+
+            return [
+
+                "Continue solving interview problems.",
+
+                "Build portfolio projects.",
+
+                "Maintain LinkedIn profile."
+
+            ]
+
+        plan = []
+
+        for skill in missing:
+            plan.append(f"Learn {skill}")
+
+        plan.append("Build one production-level project.")
+        plan.append("Update Resume after learning.")
+        plan.append("Practice Mock Interviews.")
+
+        return plan
+
+    # ======================================================
     # Recruiter Decision
-    # ==================================================
+    # ======================================================
 
     def recruiter_feedback(self, score):
 
-        if score >= 95:
-            return "Outstanding Candidate"
-
-        elif score >= 85:
+        if score >= 90:
             return "Highly Recommended"
 
         elif score >= 75:
@@ -105,22 +138,40 @@ class LLMEngine:
 
         return "Not Recommended"
 
-    # ==================================================
-    # Hiring Probability
-    # ==================================================
+    # ======================================================
+    # Executive Summary
+    # ======================================================
 
-    def hiring_probability(self, score):
+    def executive_summary(
+        self,
+        ats,
+        similarity,
+        quality,
+    ):
 
-        return min(100, max(0, score))
+        overall = round(
+            (ats + similarity + quality) / 3,
+            2,
+        )
 
-    # ==================================================
+        return f"""
+Overall Resume Score : {overall}%
+
+ATS Score : {ats}%
+
+Job Similarity : {similarity}%
+
+Resume Quality : {quality}%
+"""
+
+    # ======================================================
     # Career Advice
-    # ==================================================
+    # ======================================================
 
     def career_advice(
         self,
         experience,
-        missing
+        missing,
     ):
 
         advice = []
@@ -132,12 +183,12 @@ class LLMEngine:
 
         elif experience < 5:
             advice.append(
-                "Build domain expertise and advanced certifications."
+                "Earn cloud and AI certifications."
             )
 
         else:
             advice.append(
-                "Develop leadership and mentoring skills."
+                "Develop leadership skills."
             )
 
         if missing:
@@ -147,101 +198,41 @@ class LLMEngine:
             )
 
         advice.append(
-            "Maintain an updated LinkedIn and GitHub portfolio."
+            "Maintain an updated LinkedIn and GitHub profile."
         )
 
         return advice
 
-    # ==================================================
-    # Executive Summary
-    # ==================================================
+    # ======================================================
+    # MAIN REPORT
+    # ======================================================
 
-    def summarize(
-        self,
-        ats,
-        similarity,
-        quality
-    ):
-
-        return (
-            f"ATS Score: {ats}% | "
-            f"Similarity: {similarity}% | "
-            f"Resume Quality: {quality}%"
-        )
-
-    # ==================================================
-    # AI Chat
-    # ==================================================
-
-    def chat(
-        self,
-        message
-    ):
-
-        message = message.lower()
-
-        if "resume" in message:
-            return "I can help improve your resume."
-
-        if "ats" in message:
-            return "Use relevant keywords from the job description."
-
-        if "interview" in message:
-            return "Practice technical and behavioral questions."
-
-        if "career" in message:
-            return "Continue learning in-demand technologies and build strong projects."
-
-        return "Please ask a resume, interview, ATS or career-related question."
-
-    # ==================================================
-    # Cover Letter Prompt
-    # ==================================================
-
-    def cover_letter(
-        self,
-        role
-    ):
-
-        return (
-            f"Generate a professional cover letter for the position of {role}."
-        )
-
-    # ==================================================
-    # Interview Prompt
-    # ==================================================
-
-    def interview_questions(
-        self,
-        role
-    ):
-
-        return (
-            f"Generate interview questions for {role}."
-        )
-
-    # ==================================================
-    # Generic Generate
-    # ==================================================
-
-    def generate(
+    def generate_report(
         self,
         ats,
         similarity,
         quality,
         experience,
         matched,
-        missing
+        missing,
     ):
+
+        overall = round(
+            (ats + similarity + quality) / 3,
+            2,
+        )
 
         return {
 
             "Executive Summary":
-                self.summarize(
+                self.executive_summary(
                     ats,
                     similarity,
-                    quality
+                    quality,
                 ),
+
+            "Overall Score":
+                overall,
 
             "AI Review":
                 self.review_resume(
@@ -250,7 +241,7 @@ class LLMEngine:
                     quality,
                     experience,
                     matched,
-                    missing
+                    missing,
                 ),
 
             "Strengths":
@@ -263,20 +254,20 @@ class LLMEngine:
                     missing
                 ),
 
+            "Learning Plan":
+                self.learning_plan(
+                    missing
+                ),
+
             "Career Advice":
                 self.career_advice(
                     experience,
-                    missing
+                    missing,
                 ),
 
             "Recruiter Decision":
                 self.recruiter_feedback(
-                    ats
-                ),
-
-            "Hiring Probability":
-                self.hiring_probability(
-                    ats
+                    overall
                 ),
 
             "Generated On":
@@ -284,3 +275,26 @@ class LLMEngine:
                     "%d-%m-%Y %H:%M"
                 )
         }
+
+    # ======================================================
+    # Backward Compatibility
+    # ======================================================
+
+    def generate(
+        self,
+        ats,
+        similarity,
+        quality,
+        experience,
+        matched,
+        missing,
+    ):
+
+        return self.generate_report(
+            ats,
+            similarity,
+            quality,
+            experience,
+            matched,
+            missing,
+        )

@@ -1,25 +1,25 @@
 """
 =========================================================
 NEXUS AI
-Resume Intelligence Center
+Enterprise Resume Analyzer
+Version : 10.0 Enterprise
 Author : Naveen Kumar
-Version : 9.1 Enterprise
 =========================================================
 """
 
 import streamlit as st
 
 from config import SUPPORTED_FILES
-from core.ai_engine import AIEngine
 from core.resume_parser import ResumeParser
+
 
 
 def resume_analyzer_page():
 
-    st.title("📄 Resume Intelligence Center")
+    st.title("📄 Enterprise Resume Analyzer")
 
     st.markdown(
-        "Upload a resume and receive ATS analysis, AI insights, ML prediction, Deep Learning prediction, recruiter recommendations, and analytics."
+        "Upload your resume and receive a complete AI-powered ATS analysis."
     )
 
     uploaded_file = st.file_uploader(
@@ -29,214 +29,231 @@ def resume_analyzer_page():
     )
 
     if uploaded_file is None:
-        st.info("Please upload a resume to begin analysis.")
+        st.info("Upload a resume to start analysis.")
         return
 
     parser = ResumeParser()
-    engine = AIEngine()
 
     with st.spinner("Analyzing Resume..."):
-
         result = parser.analyze(uploaded_file)
 
-        word_count = result["word_count"]
+    st.success("Resume analyzed successfully.")
 
-        ats = min(100, max(40, int(word_count / 8)))
-
-        similarity = min(100, ats + 5)
-
-        quality = ats
-
-        experience = 3
-
-        matched = [
-            "Python",
-            "SQL",
-            "Machine Learning"
-        ]
-
-        missing = [
-            "AWS",
-            "Docker"
-        ]
-
-        analytics = engine.analytics.dashboard_metrics(
-            ats=ats,
-            similarity=similarity,
-            quality=quality
-        )
-
-        ml_report = engine.ml.full_report(
-            experience=experience,
-            skills=15,
-            education=4,
-            projects=5,
-            certifications=2,
-            model_name="Random Forest"
-        )
-
-        dl_report = engine.dl.full_report(
-            experience=experience,
-            skills=15,
-            projects=5,
-            education=4,
-            certifications=2
-        )
-
-        ai_review = engine.llm.generate_report(
-            ats=ats,
-            similarity=similarity,
-            quality=quality,
-            experience=experience,
-            matched=matched,
-            missing=missing
-        )
-
-    st.success("Resume Analysis Completed Successfully!")
+    # ===================================================
+    # Candidate Header
+    # ===================================================
 
     st.divider()
 
-    # ====================================================
-    # Dashboard
-    # ====================================================
+    col1, col2 = st.columns([3, 1])
+
+    with col1:
+
+        st.subheader(result["name"])
+
+        st.write("📧", result["email"])
+        st.write("📱", result["phone"])
+
+    with col2:
+
+        score = result["resume_score"]
+
+        if score >= 90:
+            grade = "A+"
+            color = "🟢"
+
+        elif score >= 80:
+            grade = "A"
+
+            color = "🟢"
+
+        elif score >= 70:
+            grade = "B+"
+
+            color = "🟡"
+
+        elif score >= 60:
+            grade = "B"
+
+            color = "🟠"
+
+        else:
+
+            grade = "C"
+
+            color = "🔴"
+
+        st.metric(
+            "ATS Score",
+            f"{score}%"
+        )
+
+        st.metric(
+            "Grade",
+            f"{color} {grade}"
+        )
+
+    st.divider()
+
+    # ===================================================
+    # Resume Statistics
+    # ===================================================
+
+    st.subheader("📊 Resume Statistics")
 
     c1, c2, c3, c4 = st.columns(4)
 
-    c1.metric("ATS Score", f"{ats}%")
-    c2.metric("ML Score", f'{ml_report["Hiring Score"]}%')
-    c3.metric("DL Score", f'{dl_report["Hiring Score"]}%')
-    c4.metric("Grade", analytics["Grade"])
+    c1.metric("Words", result["word_count"])
 
-    st.progress(analytics["Overall Score"] / 100)
+    c2.metric("Characters", result["character_count"])
+
+    c3.metric("Lines", result["line_count"])
+
+    c4.metric(
+        "Reading Time",
+        f'{result["reading_time"]} min'
+    )
 
     st.divider()
 
-    # ====================================================
+    # ===================================================
+    # Skills
+    # ===================================================
+
+    st.subheader("🛠 Skills Detected")
+
+    skills = result["skills"]
+
+    if skills:
+
+        cols = st.columns(4)
+
+        for i, skill in enumerate(skills):
+
+            cols[i % 4].success(skill)
+
+    else:
+
+        st.warning("No skills detected.")
+
+    st.divider()
+
+    # ===================================================
+    # Links
+    # ===================================================
+
+    st.subheader("🌐 Professional Profiles")
+
+    st.write("LinkedIn :", result["linkedin"] or "-")
+
+    st.write("GitHub :", result["github"] or "-")
+
+    if result["portfolio"]:
+
+        st.write("Portfolio")
+
+        for site in result["portfolio"]:
+
+            st.write("•", site)
+
+    st.divider()
+
+    # ===================================================
+    # ATS Feedback
+    # ===================================================
+
+    st.subheader("🤖 AI ATS Review")
+
+    if score >= 90:
+
+        st.success(
+            """
+Excellent ATS optimized resume.
+
+Strong keyword coverage.
+
+Well formatted for recruiters.
+"""
+        )
+
+    elif score >= 75:
+
+        st.info(
+            """
+Good resume.
+
+Add more measurable achievements.
+
+Improve technical keywords.
+"""
+        )
+
+    else:
+
+        st.error(
+            """
+Resume requires improvement.
+
+• Add projects
+
+• Add certifications
+
+• Improve formatting
+
+• Improve ATS keywords
+
+• Add measurable achievements
+"""
+        )
+
+    st.divider()
+
+    # ===================================================
     # Resume Preview
-    # ====================================================
+    # ===================================================
 
     st.subheader("📄 Resume Preview")
 
     st.text_area(
-        "Extracted Resume",
+
+        "",
+
         result["raw_text"],
-        height=300
+
+        height=350
+
     )
 
     st.divider()
 
-    # ====================================================
-    # Resume Statistics
-    # ====================================================
+    # ===================================================
+    # Final Recommendation
+    # ===================================================
 
-    st.subheader("📊 Resume Statistics")
+    st.subheader("🎯 Recruiter Recommendation")
 
-    a, b, c = st.columns(3)
+    if score >= 90:
 
-    a.metric("Words", result["word_count"])
-    b.metric("Characters", result["character_count"])
-    c.metric("Lines", result["line_count"])
+        st.success("Highly Recommended")
 
-    st.divider()
+    elif score >= 75:
 
-    # ====================================================
-    # Contact
-    # ====================================================
+        st.info("Recommended")
 
-    st.subheader("📞 Contact Information")
+    elif score >= 60:
 
-    st.write("📧 Email:", result["email"])
-    st.write("📱 Phone:", result["phone"])
-    st.write("🔗 LinkedIn:", result["linkedin"])
-    st.write("💻 GitHub:", result["github"])
+        st.warning("Needs Improvement")
 
-    if result["portfolio"]:
+    else:
 
-        st.write("🌐 Portfolio")
-
-        for site in result["portfolio"]:
-            st.write(f"• {site}")
+        st.error("Not Recommended")
 
     st.divider()
 
-    # ====================================================
-    # Recruiter Dashboard
-    # ====================================================
+    # ===================================================
+    # Version Footer
+    # ===================================================
 
-    st.subheader("🎯 Recruiter Dashboard")
-
-    d1, d2, d3 = st.columns(3)
-
-    d1.metric("Overall Score", analytics["Overall Score"])
-
-    d2.metric("Recommendation", analytics["Recommendation"])
-
-    d3.metric("Resume Grade", analytics["Grade"])
-
-    st.divider()
-
-    # ====================================================
-    # ML Prediction
-    # ====================================================
-
-    st.subheader("🤖 Machine Learning Prediction")
-
-    st.json(ml_report)
-
-    st.divider()
-
-    # ====================================================
-    # Deep Learning Prediction
-    # ====================================================
-
-    st.subheader("🧠 Deep Learning Prediction")
-
-    st.json(dl_report)
-
-    st.divider()
-
-    # ====================================================
-    # AI Review
-    # ====================================================
-
-    st.subheader("💬 AI Career Coach")
-
-    for item in ai_review["AI Review"]:
-        st.success(item)
-
-    st.info(ai_review["Recruiter Decision"])
-
-    st.subheader("📚 Learning Plan")
-
-    for item in ai_review["Learning Plan"]:
-        st.write(f"• {item}")
-
-    st.divider()
-
-    # ====================================================
-    # Analytics
-    # ====================================================
-
-    st.subheader("📈 Analytics")
-
-    pie = engine.analytics.pie_chart(
-        matched,
-        missing
-    )
-
-    st.plotly_chart(
-        pie,
-        use_container_width=True,
-        key="resume_pie"
-    )
-
-    bar = engine.analytics.bar_chart(
-        matched,
-        missing
-    )
-
-    st.plotly_chart(
-        bar,
-        use_container_width=True,
-        key="resume_bar"
+    st.caption(
+        "NEXUS AI Resume Intelligence Platform • Version 10 Enterprise"
     )

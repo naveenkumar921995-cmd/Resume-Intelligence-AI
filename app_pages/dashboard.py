@@ -1,7 +1,8 @@
 """
 =========================================================
 NEXUS AI
-Dashboard Page
+Enterprise Dashboard
+Version : 10.0 Enterprise
 Author : Naveen Kumar
 =========================================================
 """
@@ -19,109 +20,262 @@ from config import (
 
 def dashboard_page():
 
-    st.title("🤖 NEXUS AI")
+    st.title("🚀 NEXUS AI Enterprise")
+
+    st.caption("Resume Intelligence Platform • Version 10 Enterprise")
 
     st.markdown("""
-### Enterprise AI Career Intelligence Platform
+## AI Powered Resume Intelligence Platform
 
-Analyze resumes using:
+Analyze, Rank and Optimize resumes using:
 
 - ATS Analysis
-- NLP
+- NLP Engine
 - Machine Learning
 - Deep Learning
-- AI Career Guidance
-- Skill Gap Analysis
+- LLM Career Coach
 - Recruiter Intelligence
-- Learning Recommendation
-- Resume Intelligence
-
----
+- Resume Analytics
+- Skill Gap Detection
+- AI Recommendations
 """)
-
-    c1, c2, c3, c4 = st.columns(4)
-
-    c1.metric("Departments", TOTAL_DEPARTMENTS)
-    c2.metric("Job Roles", TOTAL_JOB_ROLES)
-    c3.metric("Skills", TOTAL_SKILLS)
-    c4.metric("AI Modules", TOTAL_AI_MODULES)
 
     st.divider()
 
-    st.subheader("Technology Stack")
+    # =====================================
+    # KPI Dashboard
+    # =====================================
 
-    tech = pd.DataFrame({
-        "Category": [
-            "Programming",
-            "Analytics",
-            "Machine Learning",
-            "Deep Learning",
-            "Natural Language Processing",
-            "Generative AI",
-            "Visualization",
-            "Deployment"
-        ],
-        "Technology": [
-            "Python",
-            "NumPy • Pandas",
-            "Scikit-learn",
-            "TensorFlow",
-            "Regex • TF-IDF • spaCy",
-            "OpenAI • Ollama • Gemini",
-            "Matplotlib • Plotly",
-            "Streamlit"
-        ]
-    })
+    c1, c2, c3, c4 = st.columns(4)
 
-    st.dataframe(
-        tech,
-        hide_index=True,
-        use_container_width=True
+    c1.metric(
+        "Departments",
+        TOTAL_DEPARTMENTS
+    )
+
+    c2.metric(
+        "Job Roles",
+        TOTAL_JOB_ROLES
+    )
+
+    c3.metric(
+        "Skills",
+        TOTAL_SKILLS
+    )
+
+    c4.metric(
+        "AI Modules",
+        TOTAL_AI_MODULES
     )
 
     st.divider()
 
-    st.subheader("Platform Features")
+    # =====================================
+    # AI Engine Status
+    # =====================================
+
+    st.subheader("🟢 AI Engine Status")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.success("Resume Parsing")
-        st.success("ATS Resume Analysis")
-        st.success("Skill Gap Analysis")
-        st.success("Resume Ranking")
-        st.success("Department-wise Analysis")
-        st.success("Learning Recommendation")
-        st.success("Interview Questions")
+
+        st.success("Resume Parser")
+
+        st.success("ATS Engine")
+
+        st.success("Analytics Engine")
+
+        st.success("Machine Learning")
+
+        st.success("Deep Learning")
 
     with col2:
-        st.success("Machine Learning")
-        st.success("Deep Learning")
-        st.success("NLP Similarity")
-        st.success("AI Resume Review")
-        st.success("Cover Letter Generator")
-        st.success("Email Generator")
+
+        st.success("LLM Engine")
+
+        st.success("Career Coach")
+
         st.success("Recruiter Dashboard")
+
+        st.success("Report Generator")
+
+        st.success("PDF Export")
 
     st.divider()
 
-    st.subheader("Platform Workflow")
+    # =====================================
+    # Quick Actions
+    # =====================================
 
-    st.markdown("""
-```text
+    st.subheader("⚡ Quick Actions")
+
+    a1, a2, a3, a4 = st.columns(4)
+
+    with a1:
+        st.info("📄 Resume Analyzer")
+
+    with a2:
+        st.info("🤖 ML Prediction")
+
+    with a3:
+        st.info("🧠 AI Career Coach")
+
+    with a4:
+        st.info("📈 Analytics")
+
+    st.divider()
+
+    # =====================================
+    # Platform Modules
+    # =====================================
+
+    st.subheader("🏆 Enterprise Modules")
+
+    modules = pd.DataFrame({
+
+        "Module":[
+
+            "Resume Parser",
+
+            "ATS Analyzer",
+
+            "Analytics",
+
+            "Machine Learning",
+
+            "Deep Learning",
+
+            "AI Career Coach",
+
+            "Recruiter Dashboard",
+
+            "Report Generator",
+
+            "Resume Ranking",
+
+            "Skill Gap Analysis",
+
+            "Interview Generator",
+
+            "Cover Letter Generator"
+
+        ],
+
+        "Status":[
+
+            "✅ Ready",
+
+            "✅ Ready",
+
+            "✅ Ready",
+
+            "✅ Ready",
+
+            "✅ Ready",
+
+            "✅ Ready",
+
+            "🚧 Upgrading",
+
+            "🚧 Upgrading",
+
+            "🚧 Upgrading",
+
+            "🚧 Upgrading",
+
+            "🚧 Upgrading",
+
+            "🚧 Upgrading"
+
+        ]
+
+    })
+
+    st.dataframe(
+        modules,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.divider()
+
+    # =====================================
+    # Technology Stack
+    # =====================================
+
+    st.subheader("💻 Technology Stack")
+
+    tech = pd.DataFrame({
+
+        "Category":[
+
+            "Programming",
+
+            "Analytics",
+
+            "Machine Learning",
+
+            "Deep Learning",
+
+            "LLM",
+
+            "Visualization",
+
+            "Deployment"
+
+        ],
+
+        "Technology":[
+
+            "Python",
+
+            "Pandas • NumPy",
+
+            "Scikit-Learn",
+
+            "TensorFlow",
+
+            "OpenAI • Ollama • Gemini",
+
+            "Plotly",
+
+            "Streamlit"
+
+        ]
+
+    })
+
+    st.dataframe(
+
+        tech,
+
+        hide_index=True,
+
+        use_container_width=True
+
+    )
+
+    st.divider()
+
+    # =====================================
+    # Enterprise Workflow
+    # =====================================
+
+    st.subheader("📊 Enterprise Workflow")
+
+    st.code("""
+
 Upload Resume
       │
       ▼
 Resume Parsing
       │
       ▼
-Feature Engineering
-      │
-      ▼
 ATS Analysis
       │
       ▼
-NLP Similarity
+NLP Processing
       │
       ▼
 Machine Learning
@@ -130,11 +284,31 @@ Machine Learning
 Deep Learning
       │
       ▼
-Skill Gap Analysis
+Resume Ranking
+      │
+      ▼
+Skill Gap Detection
       │
       ▼
 AI Recommendation
       │
       ▼
-Executive Report
+Professional PDF Report
+
+""")
+
+    st.divider()
+
+    # =====================================
+    # Platform Version
+    # =====================================
+
+    st.success("NEXUS AI Enterprise Platform")
+
+    st.caption("""
+Version : 10.0 Enterprise
+
+Author : Naveen Kumar
+
+Enterprise Resume Intelligence Platform
 """)
