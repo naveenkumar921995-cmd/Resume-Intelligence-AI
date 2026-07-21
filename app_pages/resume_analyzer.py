@@ -35,16 +35,36 @@ def resume_analyzer_page():
     parser = ResumeParser()
 
     with st.spinner("Analyzing Resume..."):
-        result["ats_analysis"]
-        result["experience"]
-        result["education"]
-        result["projects"]
 
-    st.success("Resume analyzed successfully.")
+        result = parser.analyze(uploaded_file)
+
+        st.success("Resume analyzed successfully.")
 
     # ===================================================
     # Candidate Header
     # ===================================================
+
+    st.divider()
+    st.subheader("🎓 Candidate Summary")
+
+    c1, c2, c3 = st.columns(3)
+
+    c1.metric(
+        "Experience",
+        f'{result["experience"]} Years'
+    )
+
+    education = ", ".join(result["education"]) if result["education"] else "-"
+
+    c2.metric(
+        "Education",
+        education
+    )
+
+    c3.metric(
+        "Projects",
+        result["projects"]
+    )
 
     st.divider()
 
