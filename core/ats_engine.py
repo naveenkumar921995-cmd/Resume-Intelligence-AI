@@ -10,7 +10,7 @@ Author : Naveen Kumar
 import re
 
 
-class ATSScoreEngine:
+class ATSEngine:
 
     def __init__(self):
 
