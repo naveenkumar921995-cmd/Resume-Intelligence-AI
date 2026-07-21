@@ -9,7 +9,7 @@ Author : Naveen Kumar
 
 from core.analytics import ResumeAnalytics
 from core.ml_prediction import MLPredictor
-from core.ats_engine import ATSScoreEngine
+from core.ats_engine import ATSEngine
 
 # ------------------------------------------------------
 # Optional Modules
@@ -36,7 +36,7 @@ class AIEngine:
         # Core Engines
         # ==========================================
 
-        self.ats = ATSScoreEngine()
+        self.ats = ATSEngine()
 
         self.analytics = ResumeAnalytics()
 
