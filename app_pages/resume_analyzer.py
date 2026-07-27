@@ -35,8 +35,12 @@ def resume_analyzer_page():
     parser = ResumeParser()
 
     with st.spinner("Analyzing Resume..."):
-
-        result = parser.analyze(uploaded_file)
+        try:
+            result = parser.analyze(uploaded_file)
+        except Exception as e:
+            import traceback
+            st.code(traceback.format_exc())
+            st.stop()
 
         st.success("Resume analyzed successfully.")
 
