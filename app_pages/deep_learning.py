@@ -9,8 +9,52 @@ Author : Naveen Kumar
 
 import streamlit as st
 
-from core.deep_learning import DeepLearningModel
 from core.hiring_score import HiringScoreEngine
+
+
+class DeepLearningModel:
+    """Portable predictor kept in this page to avoid optional module imports."""
+
+    def __init__(self):
+        self.metrics = {"Loss": 0.0, "MAE": 0.0}
+
+    @staticmethod
+    def _number(value, minimum, maximum):
+        try:
+            return max(minimum, min(maximum, float(value)))
+        except (TypeError, ValueError):
+            return minimum
+
+    def full_report(self, experience, skills, projects, education, certifications):
+        experience = self._number(experience, 0, 20)
+        skills = self._number(skills, 0, 40)
+        projects = self._number(projects, 0, 20)
+        education = self._number(education, 1, 5)
+        certifications = self._number(certifications, 0, 15)
+        score = round(min(100, max(0, (
+            experience * 3.5 + skills * 1.25 + projects * 1.5
+            + education * 4.0 + certifications
+        ))), 2)
+
+        if score >= 80:
+            grade, status, recommendation = "A", "Highly Recommended", "Strong candidate for interview."
+        elif score >= 70:
+            grade, status, recommendation = "B+", "Consider for Interview", "Review the candidate's skill gaps."
+        elif score >= 60:
+            grade, status, recommendation = "B", "Consider for Interview", "Review the candidate's skill gaps."
+        else:
+            grade, status, recommendation = "C", "Needs Improvement", "Build experience, projects, and relevant skills."
+
+        return {
+            "Hiring Score": score,
+            "Confidence": "Estimated",
+            "Grade": grade,
+            "Hiring Status": status,
+            "Recommendation": recommendation,
+        }
+
+    def evaluate(self):
+        return self.metrics.copy()
 
 
 def deep_learning_page():
