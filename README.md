@@ -1,371 +1,368 @@
-# 🚀 Resume Intelligence AI
-### Enterprise AI Resume Intelligence & Hiring Analytics Platform
+# 🚀 NEXUS AI Enterprise
 
-Resume Intelligence AI is an end-to-end AI-powered recruitment platform designed to evaluate resumes, predict hiring success, generate recruiter reports, recommend learning paths, and provide AI-driven career assistance.
+<div align="center">
 
-Unlike traditional ATS tools, this platform combines Machine Learning, Deep Learning, NLP, Explainable AI, and LLM-powered features into a single intelligent recruitment ecosystem.
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-Latest-red?logo=streamlit)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange?logo=scikitlearn)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-DL-orange?logo=tensorflow)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Version](https://img.shields.io/badge/Version-12.0-gold)
 
----
+### Enterprise AI Resume Intelligence Platform
 
-# ✨ Features
+**AI-Powered Resume Analysis | ATS Optimization | Machine Learning | Deep Learning | Recruiter Intelligence**
 
-## 📄 Resume Analysis
-- Resume Parsing (PDF & DOCX)
-- ATS Score Calculation
-- Resume Skill Extraction
-- Missing Skills Detection
-- Keyword Density Analysis
-- Resume Similarity Matching
-- Candidate Ranking
+</div>
 
 ---
 
-## 🤖 Artificial Intelligence
+# 📖 Overview
 
-### AI Career Coach
-- Career Guidance
-- Skill Gap Analysis
-- Future Career Suggestions
+NEXUS AI Enterprise is an advanced Resume Intelligence Platform that helps recruiters, HR professionals, and job seekers evaluate resumes using Artificial Intelligence.
 
-### AI Interview Generator
-- Technical Questions
-- HR Questions
-- Department-wise Interview Sets
-
-### AI Email Generator
-- HR Communication
-- Candidate Emails
-- Interview Invitations
-
-### AI Cover Letter Generator
-- Personalized Cover Letter
-- Job Description Alignment
+The platform combines ATS analysis, Natural Language Processing (NLP), Machine Learning, Deep Learning, and Hiring Intelligence into a unified recruitment solution.
 
 ---
 
-## 📊 Machine Learning
+# ✨ Key Features
 
-Integrated ML Prediction Engine
+## 📄 Resume Intelligence
 
-Supported Models
-
-- Random Forest
-- XGBoost
-- Scikit-Learn Pipelines
-
-Capabilities
-
-- Hiring Score Prediction
-- Candidate Success Prediction
-- Resume Classification
-- Salary Prediction
+- PDF Resume Parsing
+- DOCX Resume Parsing
+- Contact Information Extraction
+- Skills Extraction
+- Experience Detection
+- Education Detection
+- Project Detection
+- Resume Statistics
 
 ---
 
-## 🧠 Deep Learning
+## 🎯 ATS Intelligence
 
-Deep Learning module includes:
-
-- TensorFlow / Keras Sequential Models
-- Dense Neural Networks
-- Candidate Intelligence Prediction
-- Learning-based Score Estimation
+- ATS Score
+- Missing Keywords
+- Resume Section Validation
+- Contact Validation
+- Resume Quality Analysis
+- ATS Recommendations
 
 ---
 
-## 📝 Natural Language Processing (NLP)
+## 🧠 NLP Intelligence
 
-- Resume Tokenization
-- Skill Extraction
-- Named Entity Processing
+- Resume Similarity
+- Keyword Matching
 - Semantic Similarity
-- Sentence Embeddings
-- Keyword Intelligence
-- Resume Matching
-
-Libraries
-
-- spaCy
-- NLTK
-- Sentence Transformers
+- Skill Matching
+- Role Matching
 
 ---
 
-## 📈 Analytics Dashboard
+## 🤖 Machine Learning
 
-Interactive dashboards for
-
-- ATS Distribution
-- Skill Analysis
-- Department Analytics
-- Candidate Comparison
-- Hiring Statistics
-- Recruiter Dashboard
-
-Visualization
-
-- Plotly
-- Matplotlib
+- Candidate Hiring Prediction
+- Model Comparison
+- Multiple ML Algorithms
+- Performance Evaluation
 
 ---
 
-## 📚 Learning Recommendation Engine
+## 🧬 Deep Learning
 
-Automatically recommends
+- Candidate Classification
+- AI Hiring Prediction
+- Deep Learning Score
 
-- Missing Skills
-- Learning Roadmaps
-- Department-specific Courses
-- Career Progression Suggestions
+---
+
+## 📊 Hiring Intelligence
+
+- Unified Hiring Score
+- Candidate Grade
+- Hiring Recommendation
+- AI Decision Support
 
 ---
 
 ## 📑 Executive Reports
 
-Professional PDF Reports including
-
-- ATS Score
-- ML Score
-- DL Score
-- Hiring Recommendation
-- Missing Skills
-- Candidate Summary
-- Recruiter Notes
+- Enterprise PDF Reports
+- Resume Summary
+- AI Evaluation
+- Recruiter Recommendation
+- Professional Formatting
 
 ---
 
-# 🏗 Project Architecture
+## 👨‍💼 Recruiter Dashboard
 
-```
-Resume Intelligence AI
-│
-├── Streamlit Frontend
-│
-├── Resume Parser
-│
-├── NLP Engine
-│      ├── Skill Extraction
-│      ├── Keyword Engine
-│      ├── Similarity Engine
-│
-├── Machine Learning Engine
-│      ├── Random Forest
-│      ├── XGBoost
-│
-├── Deep Learning Engine
-│      ├── Keras Sequential Network
-│
-├── Explainable AI
-│
-├── Hiring Score Engine
-│
-├── Learning Recommendation Engine
-│
-├── Recruiter Dashboard
-│
-├── Report Generator
-│
-└── AI Assistant (LLM)
-```
+- Candidate Overview
+- Resume Analytics
+- AI Performance
+- Hiring Insights
 
 ---
 
-# ⚙️ Technology Stack
+# 🏗 Project Structure
 
-## Frontend
-
-- Streamlit
-
-## Backend
-
-- Python
-
-## Machine Learning
-
-- Scikit-Learn
-- XGBoost
-- Joblib
-
-## Deep Learning
-
-- TensorFlow
-- Keras
-
-## NLP
-
-- spaCy
-- NLTK
-- Sentence Transformers
-
-## Visualization
-
-- Plotly
-- Matplotlib
-
-## Document Processing
-
-- pdfplumber
-- python-docx
-- reportlab
-- openpyxl
-
-## AI
-
-- OpenAI API
-
----
-
-# 🧩 Project Modules
-
-```
-app_pages/
+```text
+Resume-Intelligence-AI/
 │
-├── Dashboard
-├── Resume Analyzer
-├── ATS Analysis
-├── ML Prediction
-├── Deep Learning
-├── NLP Analysis
-├── AI Career Coach
-├── Cover Letter Generator
-├── Email Generator
-├── Interview Generator
-├── Recruiter Dashboard
-├── Salary Prediction
-├── Executive Report
-├── Learning Roadmap
-└── Analytics
+├── app.py
+├── config.py
+├── requirements.txt
+│
+├── app_pages/
+│   ├── dashboard.py
+│   ├── resume_analyzer.py
+│   ├── ats_analysis.py
+│   ├── similarity.py
+│   ├── ml_prediction.py
+│   ├── dl_prediction.py
+│   ├── hiring_prediction.py
+│   ├── executive_report.py
+│   ├── analytics.py
+│   └── settings.py
+│
+├── core/
+│   ├── ai_engine.py
+│   ├── ats_engine.py
+│   ├── resume_parser.py
+│   ├── keyword_engine.py
+│   ├── hiring_score.py
+│   ├── similarity_engine.py
+│   ├── ml_engine.py
+│   ├── dl_engine.py
+│   ├── report_generator.py
+│   └── ...
+│
+├── reports/
+├── assets/
+├── screenshots/
+└── README.md
 ```
 
 ---
 
-# 📂 Core AI Components
+# ⚙ Technology Stack
 
-```
-core/
+| Category | Technology |
+|-----------|------------|
+| Frontend | Streamlit |
+| Backend | Python |
+| Machine Learning | Scikit-Learn, XGBoost |
+| Deep Learning | TensorFlow |
+| NLP | spaCy, NLTK, Sentence Transformers |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly, Matplotlib |
+| PDF | ReportLab |
+| Resume Parsing | PDFPlumber, python-docx |
 
+---
+
+# 🧠 AI Workflow
+
+```text
+Resume Upload
+      │
+      ▼
 Resume Parser
-
+      │
+      ▼
 Keyword Engine
-
+      │
+      ▼
+ATS Engine
+      │
+      ▼
 Similarity Engine
-
-Hiring Score Engine
-
-Feature Engineering
-
-ML Prediction
-
+      │
+      ▼
+Machine Learning
+      │
+      ▼
 Deep Learning
-
-Explainability
-
-Learning Recommendation
-
-Visualization
-
-Report Generator
-
+      │
+      ▼
+Hiring Score Engine
+      │
+      ▼
+Executive Report
+      │
+      ▼
 Recruiter Dashboard
-
-LLM Engine
 ```
 
 ---
 
-# 🧪 Machine Learning Models
+# 📊 Enterprise Modules
 
-| Model | Purpose |
-|--------|----------|
-| Random Forest Regressor | Hiring Prediction |
-| XGBoost Regressor | Candidate Performance Prediction |
-| Scikit-Learn Pipelines | Data Processing |
-| Feature Engineering | Candidate Features |
-
----
-
-# 🧠 Deep Learning Model
-
-Implemented using TensorFlow/Keras
-
-Architecture
-
-Input Layer
-
-↓
-
-Dense Layer
-
-↓
-
-Dense Layer
-
-↓
-
-Output Layer
-
-Suitable for intelligent candidate scoring and prediction tasks.
+- Dashboard
+- Resume Analyzer
+- ATS Analysis
+- NLP Similarity
+- Machine Learning
+- Deep Learning
+- Hiring Prediction
+- Executive Report
+- Recruiter Analytics
+- AI Career Coach
+- Interview Generator
+- Salary Prediction
+- Cover Letter Generator
+- Email Generator
 
 ---
 
-# 📊 Supported Data
+# 📸 Screenshots
 
-- Resume PDFs
-- DOCX Files
-- Skills Dataset
-- Department Dataset
-- Salary Dataset
-- Job Roles Dataset
-- Learning Paths
+Create a folder named **screenshots** and add images.
 
----
+```text
+screenshots/
 
-# 📦 Python Libraries
+dashboard.png
 
-- Streamlit
-- Pandas
-- NumPy
-- Scikit-Learn
-- XGBoost
-- TensorFlow
-- spaCy
-- NLTK
-- Sentence Transformers
-- Plotly
-- Matplotlib
-- ReportLab
-- pdfplumber
-- python-docx
-- Pillow
-- OpenAI
+resume_analyzer.png
 
----
+ats_analysis.png
 
-# 🚀 Future Enhancements
+ml_prediction.png
 
-- Resume OCR
-- Resume Image Understanding
-- Multi-language Resume Analysis
-- RAG-based Resume Chat
-- AI Recruiter Copilot
-- Voice Interview Assistant
-- Resume Fraud Detection
-- Candidate Personality Prediction
-- Vector Database Integration
-- Multi-LLM Support
+executive_report.png
+```
+
+Example:
+
+```markdown
+## Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+## Resume Analyzer
+
+![Resume](screenshots/resume_analyzer.png)
+
+## ATS Analysis
+
+![ATS](screenshots/ats_analysis.png)
+```
 
 ---
 
-# 👨‍💻 Developed By
+# 🚀 Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/Resume-Intelligence-AI.git
+```
+
+Go to the project folder
+
+```bash
+cd Resume-Intelligence-AI
+```
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the application
+
+```bash
+streamlit run app.py
+```
+
+---
+
+# 📦 Requirements
+
+```
+Python 3.10+
+
+Streamlit
+
+Scikit-Learn
+
+TensorFlow
+
+Pandas
+
+NumPy
+
+Plotly
+
+pdfplumber
+
+python-docx
+
+ReportLab
+```
+
+---
+
+# 🎯 Future Roadmap
+
+- LinkedIn Profile Analyzer
+- GitHub Portfolio Analyzer
+- Bulk Resume Screening
+- Recruiter Login
+- Cloud Database
+- AI Resume Builder
+- AI Resume Optimizer
+- AI Interview Assistant
+- Resume Ranking Engine
+- HR Analytics Dashboard
+
+---
+
+# 🤝 Contribution
+
+Contributions are welcome.
+
+1. Fork the repository
+
+2. Create a new branch
+
+3. Commit your changes
+
+4. Push the branch
+
+5. Open a Pull Request
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Author
 
 **Naveen Kumar**
 
-AI | Machine Learning | Deep Learning | NLP | Generative AI | Data Science
+AI Engineer | Facility Management Professional | Python Developer
 
-Focused on building enterprise-grade AI applications for intelligent recruitment and workforce analytics.
+GitHub:
+https://github.com/naveenkumar921995-cmd
 
 ---
 
-# ⭐ Project Vision
+<div align="center">
 
-To build a next-generation AI Recruitment Intelligence Platform capable of assisting recruiters, HR teams, and organizations in making faster, smarter, and data-driven hiring decisions using Artificial Intelligence.
+## ⭐ If you like this project, don't forget to Star the repository ⭐
+
+**NEXUS AI Enterprise**
+
+Enterprise Resume Intelligence Platform
+
+Made with ❤️ using Python, Streamlit and Artificial Intelligence.
+
+</div>
