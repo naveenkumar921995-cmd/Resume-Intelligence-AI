@@ -307,94 +307,41 @@ class ResumeParser:
         return min(score, 100)
 
     # =====================================================
-# COMPLETE ANALYSIS
-# =====================================================
+    # COMPLETE ANALYSIS
+    # =====================================================
 
-def analyze(self, uploaded_file):
-
-    text = self.extract_text(uploaded_file)
-
-    skills = self.extract_skills(text)
-
-    parsed_resume = {
-
-        "raw_text": text,
-
-        "word_count": len(text.split()),
-
-        "email": self.extract_email(text),
-
-        "phone": self.extract_phone(text),
-
-        "linkedin": self.extract_linkedin(text)
-
-    }
-
-    # Use master skill database from KeywordEngine
-    skill_database = self.keyword_engine.master_skills
-
-    ats_report = self.ats_engine.analyze(
-
-        parsed_resume,
-
-        skill_database
-
-    )
-
-    return {
-
-        # ------------------------------------------
-        # Raw Resume
-        # ------------------------------------------
-
-        "raw_text": text,
-
-        # ------------------------------------------
-        # Candidate
-        # ------------------------------------------
-
-        "name": self.extract_name(text),
-
-        "email": self.extract_email(text),
-
-        "phone": self.extract_phone(text),
-
-        "linkedin": self.extract_linkedin(text),
-
-        "github": self.extract_github(text),
-
-        "portfolio": self.extract_portfolio(text),
-
-        # ------------------------------------------
-        # Resume Intelligence
-        # ------------------------------------------
-
-        "skills": skills,
-
-        "experience": self.extract_experience(text),
-
-        "education": self.extract_education(text),
-
-        "projects": self.extract_projects(text),
-
-        # ------------------------------------------
-        # Resume Statistics
-        # ------------------------------------------
-
-        "resume_score": self.resume_score(text),
-
-        "reading_time": self.reading_time(text),
-
-        "word_count": len(text.split()),
-
-        "character_count": len(text),
-
-        "line_count": len(text.splitlines()),
-
-        # ------------------------------------------
-        # ATS Engine
-        # ------------------------------------------
-
-        "ats_analysis": ats_report
-
-    }
+    def analyze(self, uploaded_file):
+        """Extract resume details and produce a complete analysis result."""
+        text = self.extract_text(uploaded_file)
+        skills = self.extract_skills(text)
+        parsed_resume = {
+            "raw_text": text,
+            "word_count": len(text.split()),
+            "email": self.extract_email(text),
+            "phone": self.extract_phone(text),
+            "linkedin": self.extract_linkedin(text),
+            "github": self.extract_github(text),
+        }
+        ats_report = self.ats_engine.analyze(
+            parsed_resume,
+            self.keyword_engine.master_skills,
+        )
+        return {
+            "raw_text": text,
+            "name": self.extract_name(text),
+            "email": parsed_resume["email"],
+            "phone": parsed_resume["phone"],
+            "linkedin": parsed_resume["linkedin"],
+            "github": parsed_resume["github"],
+            "portfolio": self.extract_portfolio(text),
+            "skills": skills,
+            "experience": self.extract_experience(text),
+            "education": self.extract_education(text),
+            "projects": self.extract_projects(text),
+            "resume_score": self.resume_score(text),
+            "reading_time": self.reading_time(text),
+            "word_count": len(text.split()),
+            "character_count": len(text),
+            "line_count": len(text.splitlines()),
+            "ats_analysis": ats_report,
+        }
