@@ -9,7 +9,7 @@ Author : Naveen Kumar
 
 import streamlit as st
 
-from core.ai_engine import AIEngine
+from core.deep_learning import DeepLearningModel
 from core.hiring_score import HiringScoreEngine
 
 
@@ -24,7 +24,7 @@ Neural Networks + Enterprise Hiring Intelligence.
         """
     )
 
-    engine = AIEngine()
+    predictor = DeepLearningModel()
 
     hiring = HiringScoreEngine()
 
@@ -100,7 +100,7 @@ Neural Networks + Enterprise Hiring Intelligence.
 
         ):
 
-            report = engine.dl.full_report(
+            report = predictor.full_report(
 
                 experience=experience,
 
@@ -317,7 +317,7 @@ Neural Networks + Enterprise Hiring Intelligence.
 
         st.subheader("🧠 Deep Learning Model Evaluation")
 
-        metrics = engine.dl.evaluate()
+        metrics = predictor.evaluate()
 
         m1, m2 = st.columns(2)
 
