@@ -16,7 +16,6 @@ scipy
 # Machine Learning
 # ==========================
 xgboost
-tensorflow
 
 # ==========================
 # NLP

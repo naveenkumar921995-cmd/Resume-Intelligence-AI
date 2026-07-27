@@ -4,7 +4,7 @@ NEXUS AI
 Enterprise AI Career Intelligence Platform
 Configuration File
 Author : Naveen Kumar
-Version : 8.0
+Version : 11.0
 =========================================================
 """
 
@@ -13,7 +13,7 @@ Version : 8.0
 # ==========================================================
 
 APP_NAME = "NEXUS AI"
-APP_VERSION = "8.0 Enterprise"
+APP_VERSION = "11.0 Enterprise"
 
 PAGE_TITLE = "NEXUS AI"
 PAGE_ICON = "🤖"
@@ -78,7 +78,7 @@ SCALER = MODEL_PATH + "scaler.pkl"
 LABEL_ENCODER = MODEL_PATH + "label_encoder.pkl"
 TFIDF = MODEL_PATH + "tfidf_vectorizer.pkl"
 
-DEEP_MODEL = MODEL_PATH + "deep_learning_model.keras"
+DEEP_MODEL = MODEL_PATH + "deep_learning_model.joblib"
 
 # ==========================================================
 # DATA FILES
