@@ -161,25 +161,27 @@ Hiring Score and PDF Export.
 
     ):
 
-        result = hiring_engine.calculate_hiring_score(
+        result = hiring_engine.report(
 
-            ats_score=ats_score,
+            ats=ats_score,
 
-            similarity_score=ats_score,
+            similarity=ats_score,
 
-            ml_score=ml_score,
+            ml=ml_score,
 
-            dl_score=dl_score,
+            dl=dl_score,
 
-            experience=5,
+            technical=min(len(matched_skills) * 10, 100),
 
-            skills=len(matched_skills)
+            soft_skills=80,
+
+            experience=50
 
         )
 
-        final_score = result["final_score"]
+        final_score = result["Hiring Score"]
 
-        recommendation = result["recommendation"]
+        recommendation = result["Recommendation"]
         st.success("Executive Report Generated Successfully")
 
         st.metric(

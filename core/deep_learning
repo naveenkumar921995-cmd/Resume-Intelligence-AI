@@ -1,0 +1,121 @@
+"""Neural-network based candidate hiring prediction engine.
+
+The UI expects this module to be available through ``AIEngine.dl``.  It uses
+scikit-learn's MLPRegressor so the feature works with the dependencies already
+declared by this project and does not require a separate TensorFlow install.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import pandas as pd
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import MinMaxScaler
+
+
+class DeepLearningModel:
+    """Train a small deterministic neural network on a representative dataset."""
+
+    feature_names = [
+        "Experience",
+        "Skills",
+        "Projects",
+        "Education",
+        "Certifications",
+    ]
+
+    def __init__(self):
+        self.model = None
+        self.scaler = None
+        self.metrics = None
+
+    def _dataset(self):
+        rng = np.random.default_rng(42)
+        rows = 600
+        frame = pd.DataFrame(
+            {
+                "Experience": rng.integers(0, 21, rows),
+                "Skills": rng.integers(1, 41, rows),
+                "Projects": rng.integers(0, 21, rows),
+                "Education": rng.integers(1, 6, rows),
+                "Certifications": rng.integers(0, 16, rows),
+            }
+        )
+        score = (
+            frame["Experience"] * 4.5
+            + frame["Skills"] * 1.8
+            + frame["Projects"] * 1.6
+            + frame["Education"] * 5.5
+            + frame["Certifications"] * 2.0
+            + rng.normal(0, 5, rows)
+        )
+        return frame, score.clip(0, 100)
+
+    def train(self):
+        features, target = self._dataset()
+        x_train, x_test, y_train, y_test = train_test_split(
+            features, target, test_size=0.2, random_state=42
+        )
+        self.scaler = MinMaxScaler()
+        x_train = self.scaler.fit_transform(x_train)
+        x_test = self.scaler.transform(x_test)
+        self.model = MLPRegressor(
+            hidden_layer_sizes=(24, 12),
+            activation="relu",
+            solver="lbfgs",
+            max_iter=500,
+            random_state=42,
+        )
+        self.model.fit(x_train, y_train)
+        predictions = self.model.predict(x_test)
+        self.metrics = {
+            "Loss": round(float(mean_squared_error(y_test, predictions)), 2),
+            "MAE": round(float(mean_absolute_error(y_test, predictions)), 2),
+        }
+
+    def _ensure_ready(self):
+        if self.model is None:
+            self.train()
+
+    def predict(self, experience, skills, projects, education, certifications):
+        self._ensure_ready()
+        values = pd.DataFrame(
+            [[experience, skills, projects, education, certifications]],
+            columns=self.feature_names,
+        )
+        score = float(self.model.predict(self.scaler.transform(values))[0])
+        return round(max(0, min(100, score)), 2)
+
+    @staticmethod
+    def _grade(score):
+        if score >= 90:
+            return "A+"
+        if score >= 80:
+            return "A"
+        if score >= 70:
+            return "B+"
+        if score >= 60:
+            return "B"
+        return "C"
+
+    def full_report(self, experience, skills, projects, education, certifications):
+        score = self.predict(experience, skills, projects, education, certifications)
+        if score >= 80:
+            status, recommendation = "Highly Recommended", "Strong candidate for interview."
+        elif score >= 60:
+            status, recommendation = "Consider for Interview", "Review the candidate's skill gaps."
+        else:
+            status, recommendation = "Needs Improvement", "Build experience, projects, and relevant skills."
+        return {
+            "Hiring Score": score,
+            "Confidence": "High" if self.metrics["MAE"] <= 8 else "Moderate",
+            "Grade": self._grade(score),
+            "Hiring Status": status,
+            "Recommendation": recommendation,
+        }
+
+    def evaluate(self):
+        self._ensure_ready()
+        return self.metrics.copy()

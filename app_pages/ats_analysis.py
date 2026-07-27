@@ -82,21 +82,18 @@ skill-gap recommendations.
     # ATS Analysis
     # =====================================================
 
-    required_skills = keyword_engine.skills["Skill"].tolist()
+    # KeywordEngine stores the master skills as a list.  ATSEngine expects the
+    # parsed resume dictionary plus that list, and returns the complete ATS
+    # report used throughout this page.
+    report = ats_engine.analyze(
 
-    report = keyword_engine.analyze(
+        result,
 
-        resume_text,
-
-        required_skills
-
-    )
-
-    ats_report = ats_engine.analyze_resume(
-
-        resume_text
+        keyword_engine.skills
 
     )
+
+    ats_report = report
 
     experience_score = min(
 
