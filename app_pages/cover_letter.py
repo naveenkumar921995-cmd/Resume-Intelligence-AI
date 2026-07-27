@@ -26,9 +26,13 @@ def cover_letter_page():
         with st.spinner("Generating Cover Letter..."):
 
             letter = generator.generate(
-                name,
-                company,
-                role
+                candidate_name=name,
+                company=company,
+                department="General",
+                role=role,
+                experience=0,
+                matched_skills=[role],
+                projects=0,
             )
 
         st.success("Cover Letter Generated Successfully!")

@@ -23,7 +23,13 @@ def interview_generator_page():
         generator = InterviewGenerator()
 
         with st.spinner("Generating Questions..."):
-            questions = generator.generate(role)
+            interview_kit = generator.generate(
+                matched_skills=[role],
+                missing_skills=[],
+                experience=0,
+            )
+
+        questions = interview_kit["Questions"]
 
         st.success("Questions Generated Successfully!")
 
