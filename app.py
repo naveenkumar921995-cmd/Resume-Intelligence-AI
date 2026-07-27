@@ -40,12 +40,7 @@ from app_pages.cover_letter import cover_letter_page
 from app_pages.email_generator import email_generator_page
 from app_pages.executive_report import executive_report_page
 from app_pages.settings import settings_page
-try:
-    from app_pages.deep_learning import deep_learning_page
-except Exception:
-    def deep_learning_page():
-        import streamlit as st
-        st.warning("Deep Learning module unavailable.")
+from app_pages.deep_learning import deep_learning_page
 
 # ==========================================================
 # Streamlit Configuration
