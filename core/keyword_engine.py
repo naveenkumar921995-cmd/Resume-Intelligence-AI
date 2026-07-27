@@ -19,11 +19,13 @@ class KeywordEngine:
 
     def __init__(self):
 
-        self.skills = sorted(
+        self.master_skills = sorted(
             MASTER_SKILLS,
             key=len,
             reverse=True
         )
+
+        self.skills = self.master_skills
 
     # =====================================================
     # Normalize Text

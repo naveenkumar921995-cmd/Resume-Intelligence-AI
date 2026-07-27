@@ -3,7 +3,7 @@
 NEXUS AI
 Intelligent Talent Intelligence Platform
 Author : Naveen Kumar
-Version : 9.0 Enterprise
+Version : 11.0 Enterprise
 =========================================================
 """
 

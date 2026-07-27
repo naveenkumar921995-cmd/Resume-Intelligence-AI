@@ -307,71 +307,94 @@ class ResumeParser:
         return min(score, 100)
 
     # =====================================================
-    # COMPLETE ANALYSIS
-    # =====================================================
+# COMPLETE ANALYSIS
+# =====================================================
 
-    def analyze(self, uploaded_file):
+def analyze(self, uploaded_file):
 
-        text = self.extract_text(uploaded_file)
+    text = self.extract_text(uploaded_file)
 
-        skills = self.extract_skills(text)
+    skills = self.extract_skills(text)
 
-        ats_report = self.ats_engine.analyze_resume(text)
+    parsed_resume = {
 
-        return {
+        "raw_text": text,
 
-            # ------------------------------------------
-            # Raw Resume
-            # ------------------------------------------
+        "word_count": len(text.split()),
 
-            "raw_text": text,
+        "email": self.extract_email(text),
 
-            # ------------------------------------------
-            # Candidate
-            # ------------------------------------------
+        "phone": self.extract_phone(text),
 
-            "name": self.extract_name(text),
+        "linkedin": self.extract_linkedin(text)
 
-            "email": self.extract_email(text),
+    }
 
-            "phone": self.extract_phone(text),
+    # Use master skill database from KeywordEngine
+    skill_database = self.keyword_engine.master_skills
 
-            "linkedin": self.extract_linkedin(text),
+    ats_report = self.ats_engine.analyze(
 
-            "github": self.extract_github(text),
+        parsed_resume,
 
-            "portfolio": self.extract_portfolio(text),
+        skill_database
 
-            # ------------------------------------------
-            # Resume Intelligence
-            # ------------------------------------------
+    )
 
-            "skills": skills,
+    return {
 
-            "experience": self.extract_experience(text),
+        # ------------------------------------------
+        # Raw Resume
+        # ------------------------------------------
 
-            "education": self.extract_education(text),
+        "raw_text": text,
 
-            "projects": self.extract_projects(text),
+        # ------------------------------------------
+        # Candidate
+        # ------------------------------------------
 
-            # ------------------------------------------
-            # Resume Statistics
-            # ------------------------------------------
+        "name": self.extract_name(text),
 
-            "resume_score": self.resume_score(text),
+        "email": self.extract_email(text),
 
-            "reading_time": self.reading_time(text),
+        "phone": self.extract_phone(text),
 
-            "word_count": len(text.split()),
+        "linkedin": self.extract_linkedin(text),
 
-            "character_count": len(text),
+        "github": self.extract_github(text),
 
-            "line_count": len(text.splitlines()),
+        "portfolio": self.extract_portfolio(text),
 
-            # ------------------------------------------
-            # ATS Engine
-            # ------------------------------------------
+        # ------------------------------------------
+        # Resume Intelligence
+        # ------------------------------------------
 
-            "ats_analysis": ats_report
+        "skills": skills,
 
-        }
+        "experience": self.extract_experience(text),
+
+        "education": self.extract_education(text),
+
+        "projects": self.extract_projects(text),
+
+        # ------------------------------------------
+        # Resume Statistics
+        # ------------------------------------------
+
+        "resume_score": self.resume_score(text),
+
+        "reading_time": self.reading_time(text),
+
+        "word_count": len(text.split()),
+
+        "character_count": len(text),
+
+        "line_count": len(text.splitlines()),
+
+        # ------------------------------------------
+        # ATS Engine
+        # ------------------------------------------
+
+        "ats_analysis": ats_report
+
+    }
